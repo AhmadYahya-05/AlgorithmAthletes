@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import { API_ENDPOINTS } from './config/api.js';
 import './App.css';
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
 
   const fetchUser = async (token) => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/me', {
+      const response = await fetch(API_ENDPOINTS.AUTH.ME, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
