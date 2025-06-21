@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../context/UserContext';
 import NavigationBar from '../components/NavigationBar';
 import { motion } from 'framer-motion';
+import CharacterToggle from '../components/CharacterToggle';
 
 const NutritionistPage = ({ user, onLogout }) => {
   const { userStats } = useContext(UserContext);
@@ -52,37 +53,37 @@ const NutritionistPage = ({ user, onLogout }) => {
       <NavigationBar user={user} onLogout={onLogout} />
 
       {/* Main Content Area */}
-      <main className="relative z-10 w-full px-8 py-16">
+      <main className="relative z-10 w-full px-8 py-8">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-8" style={{ backdropFilter: 'blur(10px)' }}>
+          <div className="bg-white bg-opacity-90 rounded-2xl border-4 border-green-500 shadow-2xl p-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
               
               {/* Nutritionist Character Image */}
-              <div className="md:col-span-1 flex justify-center relative">
-                <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-gray-800 rounded-2xl p-4 border-2 border-yellow-400 shadow-lg cursor-pointer"
-                  onClick={handleSpriteClick}
-                >
-                  <img 
-                    src="/nutritionist.png" 
-                    alt="Nutritionist Character" 
-                    className="w-full max-w-xs mx-auto"
-                    style={{ imageRendering: 'pixelated' }}
-                  />
-                </motion.div>
-
-                {/* Speech Bubble */}
-                {isBubbleVisible && (
-                  <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-64 bg-white border-2 border-gray-300 rounded-lg p-3 shadow-lg animate-fade-in-down">
-                    <p className="text-center text-gray-800 text-sm">{bubbleText}</p>
-                    <div className="absolute left-1/2 -translate-x-1/2 bottom-[-10px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-white"></div>
+              <div className="md:col-span-1 flex justify-center">
+                <div className="bg-gradient-to-b from-green-400 to-green-600 rounded-2xl p-4 border-4 border-green-700 shadow-lg">
+                  <div 
+                    className="cursor-pointer transform hover:scale-105 transition-transform duration-300 relative"
+                    onClick={handleSpriteClick}
+                  >
+                    <img 
+                      src="/nutritionist.png" 
+                      alt="Nutritionist Character" 
+                      className="w-full max-w-xs mx-auto"
+                      style={{ imageRendering: 'pixelated' }}
+                    />
+                    {isBubbleVisible && (
+                      <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-64 bg-white border-2 border-gray-300 rounded-lg p-3 shadow-lg animate-fade-in-down">
+                        <div className="absolute left-1/2 -translate-x-1/2 -top-[10px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-white"></div>
+                        <p className="text-center text-gray-800 text-sm">{bubbleText}</p>
+                      </div>
+                    )}
                   </div>
-                )}
+                  <CharacterToggle activeCharacter="nutritionist" />
+                </div>
               </div>
 
               {/* Coming Soon Content */}

@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import NavigationBar from '../components/NavigationBar';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { API_ENDPOINTS } from '../config/api';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import '../styles/markdown.css';
+import CharacterToggle from '../components/CharacterToggle';
 
 // WARNING: It is not recommended to store API keys in client-side code.
 // This should be handled by a backend server in a production environment.
@@ -17,7 +21,7 @@ const AIChatbotPage = ({ user, onLogout }) => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: 'You’re here? Good. Now let’s see if you’ve got what it takes.',
+      text: "You're here? Good. Now let's see if you've got what it takes.",
       sender: 'ai',
       timestamp: new Date()
     }
@@ -249,6 +253,7 @@ const AIChatbotPage = ({ user, onLogout }) => {
                     <p className="text-center text-gray-800 text-sm font-semibold">{bubbleText}</p>
                   </div>
                 )}
+                <CharacterToggle activeCharacter="coach" />
               </div>
             </motion.div>
 
@@ -273,22 +278,26 @@ const AIChatbotPage = ({ user, onLogout }) => {
                       transition={{ duration: 0.3 }}
                       className={`flex items-start gap-4 ${msg.sender === 'user' ? 'justify-end' : ''}`}
                     >
-                      {msg.sender === 'ai' && (
-                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center border-2 border-indigo-400">
-                          <Bot className="w-6 h-6 text-white"/>
-                        </div>
-                      )}
-                      <div className={`max-w-md p-4 rounded-2xl ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-800 text-gray-200 rounded-bl-none'}`}>
-                        <p className="text-sm">{msg.text}</p>
-                        <span className="text-xs text-gray-400 mt-1 block text-right">
-                          {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
+                      {/* Avatar */}
+                      <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${msg.sender === 'user' ? 'bg-blue-500' : 'bg-yellow-400'}`}>
+                        {msg.sender === 'user' ? <User size={20} /> : <Bot size={20} />}
                       </div>
-                      {msg.sender === 'user' && (
-                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-600">
-                          <User className="w-6 h-6 text-white"/>
+                      
+                      {/* Message Bubble */}
+                      <div className={`max-w-md md:max-w-lg p-4 rounded-2xl ${
+                        msg.sender === 'user' 
+                          ? 'bg-blue-600 text-white rounded-br-none' 
+                          : 'bg-gray-800 text-gray-200 rounded-bl-none'
+                      }`}>
+                        <div className={`markdown ${msg.sender === 'user' ? 'markdown-user' : ''}`}>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {msg.text}
+                          </ReactMarkdown>
                         </div>
-                      )}
+                        <div className="text-xs mt-2 opacity-60 text-right">
+                          {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      </div>
                     </motion.div>
                   ))}
                 </AnimatePresence>
