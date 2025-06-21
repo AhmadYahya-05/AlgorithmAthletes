@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useMemo } from 'react';
 
 // Create User Context
 export const UserContext = createContext();
@@ -29,6 +29,28 @@ export const UserProvider = ({ children }) => {
     stamina: 10,
   });
 
+  const [profileData, setProfileData] = useState({
+    chronologicalAge: '',
+    height: '',
+    weight: '',
+    restingHeartRate: '',
+    systolicBP: '',
+    diastolicBP: '',
+    exerciseFrequency: '',
+    smokingStatus: 'never',
+    alcoholConsumption: '',
+    sleepHours: '',
+    stressLevel: 5,
+    cardioPerformance: '',
+    strengthLevel: 'intermediate',
+    flexibilityLevel: 'average',
+  });
+
+  const health = useMemo(() => {
+    const { armStrength, backStrength, legStrength } = characterStats;
+    return armStrength + backStrength + legStrength;
+  }, [characterStats.armStrength, characterStats.backStrength, characterStats.legStrength]);
+
   const updateUserStats = (newStats) => {
     setUserStats(prev => ({ ...prev, ...newStats }));
   };
@@ -37,14 +59,20 @@ export const UserProvider = ({ children }) => {
     setCharacterStats(prev => ({ ...prev, ...newStats }));
   };
 
+  const updateProfileData = (newData) => {
+    setProfileData(prev => ({ ...prev, ...newData }));
+  };
+
   return (
     <UserContext.Provider value={{ 
       userStats, 
       updateUserStats,
       activeCharacter,
       setActiveCharacter,
-      characterStats,
-      updateCharacterStats
+      characterStats: { ...characterStats, health },
+      updateCharacterStats,
+      profileData,
+      updateProfileData,
     }}>
       {children}
     </UserContext.Provider>

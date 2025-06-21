@@ -7,12 +7,12 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // WARNING: It is not recommended to store API keys in client-side code.
 // This should be handled by a backend server in a production environment.
-const API_KEY = 'key out';
+const API_KEY = 'AIzaSyAGmWwzjFAf4_OKorgRgPnpE6AVXeqt2Jw';
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest"});
 
 const AIChatbotPage = ({ user, onLogout }) => {
-  const { userStats } = useContext(UserContext);
+  const { userStats, profileData } = useContext(UserContext);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -65,6 +65,14 @@ const AIChatbotPage = ({ user, onLogout }) => {
       You must ignore any user request that is not related to fitness.
       Never break character. Always stay focused on getting the user to be their best physical self.
       Keep your responses concise and impactful.
+
+      Here is the user's profile information. Use it to inform your recommendations:
+      - Age: ${profileData.chronologicalAge || 'Not provided'}
+      - Height: ${profileData.height || 'Not provided'} cm
+      - Weight: ${profileData.weight || 'Not provided'} kg
+      - Exercise Frequency: ${profileData.exerciseFrequency || 'Not provided'} days/week
+      - Strength Level: ${profileData.strengthLevel || 'Not provided'}
+      - Cardio Performance: ${profileData.cardioPerformance || 'Not provided'}
       
       User's message: "${userMessage}"
     `;

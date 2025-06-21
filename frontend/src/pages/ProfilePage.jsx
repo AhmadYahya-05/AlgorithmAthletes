@@ -5,25 +5,7 @@ import { motion } from 'framer-motion';
 import { API_ENDPOINTS } from '../config/api';
 
 const ProfilePage = ({ user, onLogout }) => {
-  const { userStats } = useContext(UserContext);
-  const [formData, setFormData] = useState({
-    chronologicalAge: '',
-    height: '',
-    weight: '',
-    restingHeartRate: '',
-    systolicBP: '',
-    diastolicBP: '',
-    // Lifestyle
-    exerciseFrequency: '',
-    smokingStatus: 'never',
-    alcoholConsumption: '',
-    sleepHours: '',
-    stressLevel: 5,
-    // Fitness
-    cardioPerformance: '',
-    strengthLevel: 'intermediate',
-    flexibilityLevel: 'average',
-  });
+  const { profileData, updateProfileData } = useContext(UserContext);
   const [status, setStatus] = useState({ loading: false, error: null, success: false });
 
   useEffect(() => {
@@ -50,7 +32,7 @@ const ProfilePage = ({ user, onLogout }) => {
         }
 
         // Pre-fill form with existing data
-        setFormData({
+        updateProfileData({
           chronologicalAge: data.basicMetrics.chronologicalAge || '',
           height: data.basicMetrics.height || '',
           weight: data.basicMetrics.weight || '',
@@ -81,7 +63,7 @@ const ProfilePage = ({ user, onLogout }) => {
     const { name, value } = e.target;
     // Use valueAsNumber for number inputs if browser supports it, otherwise parse it
     const parsedValue = e.target.type === 'number' ? e.target.valueAsNumber || parseFloat(e.target.value) : value;
-    setFormData(prev => ({ ...prev, [name]: parsedValue }));
+    updateProfileData({ [name]: parsedValue });
   };
 
   const handleSubmit = async (e) => {
@@ -96,7 +78,7 @@ const ProfilePage = ({ user, onLogout }) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(profileData)
       });
 
       const data = await response.json();
@@ -169,7 +151,7 @@ const ProfilePage = ({ user, onLogout }) => {
                       type="number"
                       name="chronologicalAge"
                       id="chronologicalAge"
-                      value={formData.chronologicalAge}
+                      value={profileData.chronologicalAge}
                       onChange={handleChange}
                       required
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
@@ -182,7 +164,7 @@ const ProfilePage = ({ user, onLogout }) => {
                       type="number"
                       name="height"
                       id="height"
-                      value={formData.height}
+                      value={profileData.height}
                       onChange={handleChange}
                       required
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
@@ -195,7 +177,7 @@ const ProfilePage = ({ user, onLogout }) => {
                       type="number"
                       name="weight"
                       id="weight"
-                      value={formData.weight}
+                      value={profileData.weight}
                       onChange={handleChange}
                       required
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
@@ -208,7 +190,7 @@ const ProfilePage = ({ user, onLogout }) => {
                       type="number"
                       name="restingHeartRate"
                       id="restingHeartRate"
-                      value={formData.restingHeartRate}
+                      value={profileData.restingHeartRate}
                       onChange={handleChange}
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                     />
@@ -221,7 +203,7 @@ const ProfilePage = ({ user, onLogout }) => {
                         type="number"
                         name="systolicBP"
                         placeholder="Systolic"
-                        value={formData.systolicBP}
+                        value={profileData.systolicBP}
                         onChange={handleChange}
                         className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                       />
@@ -230,7 +212,7 @@ const ProfilePage = ({ user, onLogout }) => {
                         type="number"
                         name="diastolicBP"
                         placeholder="Diastolic"
-                        value={formData.diastolicBP}
+                        value={profileData.diastolicBP}
                         onChange={handleChange}
                         className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                       />
@@ -252,7 +234,7 @@ const ProfilePage = ({ user, onLogout }) => {
                       type="number"
                       name="exerciseFrequency"
                       id="exerciseFrequency"
-                      value={formData.exerciseFrequency}
+                      value={profileData.exerciseFrequency}
                       onChange={handleChange}
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                     />
@@ -263,7 +245,7 @@ const ProfilePage = ({ user, onLogout }) => {
                     <select
                       name="smokingStatus"
                       id="smokingStatus"
-                      value={formData.smokingStatus}
+                      value={profileData.smokingStatus}
                       onChange={handleChange}
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                     >
@@ -279,7 +261,7 @@ const ProfilePage = ({ user, onLogout }) => {
                       type="number"
                       name="alcoholConsumption"
                       id="alcoholConsumption"
-                      value={formData.alcoholConsumption}
+                      value={profileData.alcoholConsumption}
                       onChange={handleChange}
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                     />
@@ -291,7 +273,7 @@ const ProfilePage = ({ user, onLogout }) => {
                       type="number"
                       name="sleepHours"
                       id="sleepHours"
-                      value={formData.sleepHours}
+                      value={profileData.sleepHours}
                       onChange={handleChange}
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                     />
@@ -307,12 +289,12 @@ const ProfilePage = ({ user, onLogout }) => {
                         max="10"
                         name="stressLevel"
                         id="stressLevel"
-                        value={formData.stressLevel}
+                        value={profileData.stressLevel}
                         onChange={handleChange}
                         className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                       />
                       <span className="text-lg">10</span>
-                      <span className="font-bold text-yellow-300 w-8 text-center">{formData.stressLevel}</span>
+                      <span className="font-bold text-yellow-300 w-8 text-center">{profileData.stressLevel}</span>
                     </div>
                   </div>
                 </div>
@@ -331,7 +313,7 @@ const ProfilePage = ({ user, onLogout }) => {
                       type="text"
                       name="cardioPerformance"
                       id="cardioPerformance"
-                      value={formData.cardioPerformance}
+                      value={profileData.cardioPerformance}
                       onChange={handleChange}
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                     />
@@ -342,7 +324,7 @@ const ProfilePage = ({ user, onLogout }) => {
                     <select
                       name="strengthLevel"
                       id="strengthLevel"
-                      value={formData.strengthLevel}
+                      value={profileData.strengthLevel}
                       onChange={handleChange}
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                     >
@@ -357,7 +339,7 @@ const ProfilePage = ({ user, onLogout }) => {
                     <select
                       name="flexibilityLevel"
                       id="flexibilityLevel"
-                      value={formData.flexibilityLevel}
+                      value={profileData.flexibilityLevel}
                       onChange={handleChange}
                       className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                     >
