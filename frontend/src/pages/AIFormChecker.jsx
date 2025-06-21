@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Upload, Play, Pause, RotateCcw, Download, Star, AlertTriangle, CheckCircle, X, LogOut, Target, BarChart3 } from 'lucide-react';
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/api.js';
+import NavigationBar from '../components/NavigationBar';
 
 const AIFormChecker = ({ user, onLogout }) => {
   const [isLiveMode, setIsLiveMode] = useState(false);
@@ -1729,41 +1730,7 @@ const AIFormChecker = ({ user, onLogout }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-indigo-800 to-blue-900 relative">
-      {/* Navigation */}
-      <motion.nav 
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="fixed top-0 w-full z-50 bg-gray-900 bg-opacity-80 border-b border-gray-700 shadow-lg"
-        style={{ backdropFilter: 'blur(10px)' }}
-      >
-        <div className="w-full px-8">
-          <div className="flex justify-between items-center h-16">
-            <motion.div 
-              whileHover={{ scale: 1.05, rotate: 5 }}
-              className="flex items-center cursor-pointer"
-              onClick={() => window.history.back()}
-            >
-              <div className="text-2xl mr-3">⚔️</div>
-              <span className="text-xl font-bold text-cyan-300" style={{ fontFamily: 'monospace' }}>
-                AI FORM CHECKER
-              </span>
-            </motion.div>
-
-            <div className="flex items-center space-x-4">
-              <span className="text-cyan-100 font-bold text-sm">
-                {user?.firstName}
-              </span>
-              <motion.button
-                onClick={onLogout}
-                whileHover={{ scale: 1.05 }}
-                className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-white font-bold"
-              >
-                <LogOut className="h-4 w-4" />
-              </motion.button>
-            </div>
-          </div>
-        </div>
-      </motion.nav>
+      <NavigationBar user={user} onLogout={onLogout} />
 
       <div className="pt-20 px-8 pb-8">
         <div className="max-w-7xl mx-auto">
