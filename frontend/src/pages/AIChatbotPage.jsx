@@ -4,6 +4,7 @@ import { Send, ArrowLeft, Activity, Zap, Heart, Shield, Bot, User } from 'lucide
 import { motion, AnimatePresence } from 'framer-motion';
 import NavigationBar from '../components/NavigationBar';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { API_ENDPOINTS } from '../config/api';
 
 // WARNING: It is not recommended to store API keys in client-side code.
 // This should be handled by a backend server in a production environment.
@@ -12,11 +13,11 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest"});
 
 const AIChatbotPage = ({ user, onLogout }) => {
-  const { userStats, profileData } = useContext(UserContext);
+  const { userStats, profileData, updateProfileData } = useContext(UserContext);
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: `Hey there, champion! 💪 I'm your AI Personal Trainer! I see you're level ${userStats.level} with ${userStats.workoutsCompleted} workouts completed. Ready to crush some goals today?`,
+      text: 'You’re here? Good. Now let’s see if you’ve got what it takes.',
       sender: 'ai',
       timestamp: new Date()
     }
@@ -27,14 +28,12 @@ const AIChatbotPage = ({ user, onLogout }) => {
   const [bubbleText, setBubbleText] = useState('');
   const [isBubbleVisible, setIsBubbleVisible] = useState(false);
 
-  const dialogueOptions = 
-    `- Age: ${profileData.chronologicalAge || 'Not provided'} - Height: ${profileData.height || 'Not provided'} cm - Weight: ${profileData.weight || 'Not provided'} kg - Exercise Frequency: ${profileData.exerciseFrequency || 'Not provided'} days/week - Strength Level: ${profileData.strengthLevel || 'Not provided'} - Cardio Performance: ${profileData.cardioPerformance || 'Not provided'} `
-
-    //"You want MOTIVATION? Here's motivation: DON'T SUCK today.",
-    //"Listen up, CHAMPION—wait, you're NOT one yet. But you WILL be if you SURVIVE my training.",
-    //"Every SECOND you waste STARING at me is a second you COULD be getting STRONGER. MOVE.",
-    //"Your legs shaking? GOOD. That means they're working!"
-  ;
+  const dialogueOptions = [
+    "You want MOTIVATION? Here's motivation: DON'T SUCK today.",
+    "Listen up, CHAMPION—wait, you're NOT one yet. But you WILL be if you SURVIVE my training.",
+    "Every SECOND you waste STARING at me is a second you COULD be getting STRONGER. MOVE.",
+    "Your legs shaking? GOOD. That means they're working!"
+  ];
 
   const handleSpriteClick = () => {
     const randomDialogue = dialogueOptions[Math.floor(Math.random() * dialogueOptions.length)];
@@ -58,6 +57,40 @@ const AIChatbotPage = ({ user, onLogout }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    // Fetch profile data when the component mounts to ensure it's available
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(API_ENDPOINTS.PROFILE.GET, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          updateProfileData({
+            chronologicalAge: data.basicMetrics.chronologicalAge || '',
+            height: data.basicMetrics.height || '',
+            weight: data.basicMetrics.weight || '',
+            restingHeartRate: data.basicMetrics.restingHeartRate || '',
+            systolicBP: data.basicMetrics.bloodPressure?.systolic || '',
+            diastolicBP: data.basicMetrics.bloodPressure?.diastolic || '',
+            exerciseFrequency: data.lifestyle?.exerciseFrequency || '',
+            smokingStatus: data.lifestyle?.smokingStatus || 'never',
+            alcoholConsumption: data.lifestyle?.alcoholConsumption || '',
+            sleepHours: data.lifestyle?.sleepHours || '',
+            stressLevel: data.lifestyle?.stressLevel || 5,
+            cardioPerformance: data.fitness?.cardioPerformance || '',
+            strengthLevel: data.fitness?.strengthLevel || 'intermediate',
+            flexibilityLevel: data.fitness?.flexibilityLevel || 'average',
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile for AI Coach:', error);
+      }
+    };
+    fetchProfile();
+  }, []); // Empty dependency array ensures this runs once on mount
 
   const getAIResponse = async (userMessage) => {
     const prompt = `
