@@ -8,6 +8,7 @@ import connectDB from './src/config/db.js';
 // Route files
 import authRoutes from './src/routes/auth.js';
 import userRoutes from './src/routes/user.js';
+import videoRoutes from './src/routes/video.js';
 import profileRoutes from './src/routes/profileRoutes.js';
 
 // Define __dirname for ES modules
@@ -24,6 +25,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve uploaded videos
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // MongoDB Connection
 const startServer = async () => {
   try {
@@ -39,6 +43,7 @@ const startServer = async () => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/video', videoRoutes);
 app.use('/api/profile', profileRoutes);
 
 // Health check route

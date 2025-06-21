@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import NutritionistPage from './pages/NutritionistPage';
 import PersonalTrainerPage from './pages/PersonalTrainerPage';
 import AIChatbotPage from './pages/AIChatbotPage';
+import AIFormChecker from './pages/AIFormChecker';
 import Character from './pages/Character';
 import ProfilePage from './pages/ProfilePage';
 import { API_ENDPOINTS } from './config/api.js';
@@ -124,6 +125,14 @@ function App() {
               element={
                 isAuthenticated ? 
                   <AIChatbotPage user={user} onLogout={logout} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
+            <Route 
+              path="/ai-form-checker" 
+              element={
+                isAuthenticated ? 
+                  <AIFormChecker user={user} onLogout={logout} /> : 
                   <Navigate to="/login" replace />
               } 
             />
