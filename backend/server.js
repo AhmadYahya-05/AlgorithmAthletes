@@ -1,24 +1,21 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import dotenv from 'dotenv';
 import path from 'path';
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
 import { fileURLToPath } from 'url';
+import connectDB from './src/config/db.js';
+
+// Route files
 import authRoutes from './src/routes/auth.js';
 import userRoutes from './src/routes/user.js';
 import videoRoutes from './src/routes/video.js';
+import profileRoutes from './src/routes/profileRoutes.js';
 
-// Get current directory for ES modules
+// Define __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables from parent directory
-dotenv.config({ path: path.join(__dirname, '../.env') });
-
-// Debug environment variables
-console.log('Environment variables loaded:');
-console.log('MONGO_URI:', process.env.MONGO_URI ? 'Set' : 'NOT SET');
-console.log('PORT:', process.env.PORT || 'Using default 5000');
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -32,18 +29,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB Connection
-const connectDB = async () => {
+const startServer = async () => {
   try {
-    if (!process.env.MONGO_URI) {
-      throw new Error('MONGO_URI environment variable is not set');
-    }
-    
-    console.log('Attempting to connect to MongoDB...');
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    await connectDB();
+    console.log('MongoDB connected successfully.');
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (error) {
-    console.error('Error connecting to MongoDB:', error.message);
-    console.error('Full error:', error);
+    console.error('Failed to connect to MongoDB:', error);
     process.exit(1);
   }
 };
@@ -52,6 +44,7 @@ const connectDB = async () => {
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/video', videoRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
@@ -63,13 +56,5 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!' });
 });
-
-// Start server
-const startServer = async () => {
-  await connectDB();
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
-};
 
 startServer(); 

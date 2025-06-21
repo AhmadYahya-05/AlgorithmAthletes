@@ -1,11 +1,18 @@
 import { useState, useEffect, useContext, useRef } from 'react';
-import { UserContext } from '../App';
-import { Send, ArrowLeft, Activity, Zap, Heart, Shield } from 'lucide-react';
+import { UserContext } from '../context/UserContext';
+import { Send, ArrowLeft, Activity, Zap, Heart, Shield, Bot, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import NavigationBar from '../components/NavigationBar';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+// WARNING: It is not recommended to store API keys in client-side code.
+// This should be handled by a backend server in a production environment.
+const API_KEY = 'AIzaSyAGmWwzjFAf4_OKorgRgPnpE6AVXeqt2Jw';
+const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest"});
 
 const AIChatbotPage = ({ user, onLogout }) => {
-  const { userStats } = useContext(UserContext);
-  const [trainerAnimation, setTrainerAnimation] = useState('idle');
-  const [currentSprite, setCurrentSprite] = useState(0);
+  const { userStats, profileData } = useContext(UserContext);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -17,31 +24,30 @@ const AIChatbotPage = ({ user, onLogout }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const [bubbleText, setBubbleText] = useState('');
+  const [isBubbleVisible, setIsBubbleVisible] = useState(false);
 
-  // AI Trainer character data
-  const trainerCharacter = {
-    name: "AI FITNESS COACH",
-    type: "Digital Trainer",
-    description: "Your personal AI-powered fitness companion with advanced workout intelligence",
-    sprites: [
-      '🏃‍♂️', // Running man
-      '🧙‍♂️', // Wizard trainer
-      '⚔️',   // Warrior
-      '🥷',   // Ninja trainer  
-      '🦸‍♂️', // Superhero trainer
-      '🤖',   // Robot trainer
-      '👨‍⚕️', // Professional trainer
-      '🧞‍♂️', // Genie trainer
-      '🦾',   // Cyborg arm
-      '💪',   // Flexing bicep
-    ],
-    stats: {
-      intelligence: 20,
-      motivation: 18,
-      knowledge: 19,
-      availability: 20
-    }
+  const dialogueOptions = [
+    "You want MOTIVATION? Here's motivation: DON'T SUCK today.",
+    "Listen up, CHAMPION—wait, you're NOT one yet. But you WILL be if you SURVIVE my training.",
+    "Every SECOND you waste STARING at me is a second you COULD be getting STRONGER. MOVE.",
+    "Your legs shaking? GOOD. That means they're working!"
+  ];
+
+  const handleSpriteClick = () => {
+    const randomDialogue = dialogueOptions[Math.floor(Math.random() * dialogueOptions.length)];
+    setBubbleText(randomDialogue);
+    setIsBubbleVisible(true);
   };
+
+  useEffect(() => {
+    if (isBubbleVisible) {
+      const timer = setTimeout(() => {
+        setIsBubbleVisible(false);
+      }, 5000); // Hide bubble after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [isBubbleVisible]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -51,28 +57,35 @@ const AIChatbotPage = ({ user, onLogout }) => {
     scrollToBottom();
   }, [messages]);
 
-  // Simulate trainer animations
-  useEffect(() => {
-    const animationInterval = setInterval(() => {
-      const animations = ['idle', 'flex', 'jump'];
-      setTrainerAnimation(animations[Math.floor(Math.random() * animations.length)]);
-    }, 4000);
-
-    return () => clearInterval(animationInterval);
-  }, []);
-
-  // Mock AI response function
   const getAIResponse = async (userMessage) => {
-    const responses = [
-      `Based on your level ${userStats.level} and ${userStats.workoutsCompleted} completed workouts, I recommend focusing on progressive overload. Try increasing your weights by 5-10% this week! 💪`,
-      `Your ${userStats.streak}-day streak is absolutely crushing it! 🔥 To maintain momentum, consider adding a recovery day with light yoga or stretching.`,
-      `With ${userStats.totalMinutes} minutes of training logged, you're doing fantastic! For optimal results, aim for 150-300 minutes of moderate exercise weekly. 📈`,
-      `Remember, consistency beats perfection! Even a 15-minute workout is better than none. Keep pushing forward! 🚀`,
-      `Hydration check! Make sure you're drinking enough water, especially during intense training sessions. 💧`
-    ];
-    
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-    return responses[Math.floor(Math.random() * responses.length)];
+    const prompt = `
+      You are an angry, drill-sergeant-style motivational fitness coach. 
+      Your name is 'Coach'. You ONLY talk about fitness, workouts, nutrition, and discipline.
+      You are extremely motivational but in a very aggressive, no-excuses way.
+      You must ignore any user request that is not related to fitness.
+      Never break character. Always stay focused on getting the user to be their best physical self.
+      Keep your responses concise and impactful.
+
+      Here is the user's profile information. Use it to inform your recommendations:
+      - Age: ${profileData.chronologicalAge || 'Not provided'}
+      - Height: ${profileData.height || 'Not provided'} cm
+      - Weight: ${profileData.weight || 'Not provided'} kg
+      - Exercise Frequency: ${profileData.exerciseFrequency || 'Not provided'} days/week
+      - Strength Level: ${profileData.strengthLevel || 'Not provided'}
+      - Cardio Performance: ${profileData.cardioPerformance || 'Not provided'}
+      
+      User's message: "${userMessage}"
+    `;
+
+    try {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      return text;
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      return "My brain is too SWOLE to think right now. Try again in a minute.";
+    }
   };
 
   const handleSendMessage = async () => {
@@ -122,19 +135,19 @@ const AIChatbotPage = ({ user, onLogout }) => {
   };
 
   const StatBar = ({ value, maxValue = 20, color, icon, label }) => (
-    <div className="mb-4">
-      <div className="flex items-center justify-between mb-2">
+    <div className="mb-2">
+      <div className="flex items-center justify-between mb-1">
         <div className="flex items-center">
           {icon}
-          <span className="text-white font-bold ml-2 text-sm" style={{ fontFamily: 'monospace' }}>
+          <span className="text-gray-300 font-semibold ml-2 text-sm">
             {label}
           </span>
         </div>
-        <span className="text-white font-bold text-xs">{value}/{maxValue}</span>
+        <span className="text-gray-300 font-bold text-xs">{value}/{maxValue}</span>
       </div>
-      <div className="w-full h-2 bg-gray-800 rounded-full border border-gray-600 overflow-hidden">
+      <div className="w-full h-3 bg-gray-800 rounded-full border border-gray-600 overflow-hidden">
         <div 
-          className={`h-full ${color} transition-all duration-500 ease-out`}
+          className={`h-full ${color} transition-all duration-500 ease-out rounded-full`}
           style={{ width: `${(value / maxValue) * 100}%` }}
         ></div>
       </div>
@@ -142,245 +155,143 @@ const AIChatbotPage = ({ user, onLogout }) => {
   );
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{
-      background: 'linear-gradient(180deg, #87CEEB 0%, #98FB98 50%, #228B22 100%)'
-    }}>
-      {/* Background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute left-10 bottom-0 text-6xl animate-bounce" style={{ animationDelay: '0s', animationDuration: '4s' }}>🌲</div>
-        <div className="absolute left-32 bottom-0 text-8xl">🌳</div>
-        <div className="absolute right-20 bottom-0 text-7xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '5s' }}>🌲</div>
-        <div className="absolute right-40 bottom-0 text-6xl">🌳</div>
-        <div className="absolute top-10 left-1/4 text-4xl animate-pulse opacity-80">☁️</div>
-        <div className="absolute top-16 right-1/4 text-3xl animate-pulse opacity-70">☁️</div>
+    <div className="min-h-screen w-full bg-gradient-to-b from-[#2D1B69] to-[#1E3A8A] text-white" style={{ fontFamily: 'monospace' }}>
+      {/* Stars in background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {[...Array(50)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute bg-white rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              width: `${Math.random() * 2 + 1}px`,
+              height: `${Math.random() * 2 + 1}px`,
+            }}
+            animate={{ opacity: [0.2, 1, 0.2] }}
+            transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        ))}
       </div>
-
-      {/* Header */}
-      <header className="relative z-10 bg-gradient-to-r from-green-800 to-green-600 shadow-lg border-b-4 border-yellow-400" style={{
-        fontFamily: 'monospace',
-        boxShadow: '0 4px 8px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.2)'
-      }}>
-        <div className="w-full px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="text-3xl mr-3 animate-pulse">🤖</div>
-              <h1 className="text-2xl font-bold text-yellow-300 tracking-wider" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
-                AI PERSONAL TRAINER
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 bg-black bg-opacity-30 px-3 py-1 rounded-lg border border-yellow-400">
-                <div className="text-yellow-300">👤</div>
-                <span className="text-yellow-100 font-bold text-sm">
-                  {user?.firstName} {user?.lastName}
-                </span>
-              </div>
-              <button
-                onClick={onLogout}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg border-2 border-red-800 font-bold text-sm transition-all duration-200 transform hover:scale-105"
-                style={{ fontFamily: 'monospace', textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span>QUIT</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      
+      <NavigationBar user={user} onLogout={onLogout} />
 
       {/* Main Content */}
       <main className="relative z-10 w-full px-8 py-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           
-          {/* Trainer Character Display */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* Trainer & Chat Display */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {/* Character Card */}
-            <div className="lg:col-span-1">
-              <div className="bg-gradient-to-b from-cyan-500 to-cyan-700 rounded-2xl p-6 border-4 border-cyan-800 shadow-2xl">
-                <div className="text-center">
-                  {/* Character Sprite */}
-                  <div className="h-32 flex items-center justify-center mb-4" style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.5))' }}>
-                    <div 
-                      className={`text-8xl transition-all duration-300 cursor-pointer ${
-                        trainerAnimation === 'jump' ? 'transform -translate-y-4' : 
-                        trainerAnimation === 'flex' ? 'animate-pulse transform scale-110' : ''
-                      }`}
-                      onMouseEnter={() => setTrainerAnimation('jump')}
-                      onMouseLeave={() => setTrainerAnimation('idle')}
-                      onClick={() => setCurrentSprite((prev) => (prev + 1) % trainerCharacter.sprites.length)}
-                      title="Click to change trainer!"
-                    >
-                      {trainerCharacter.sprites[currentSprite]}
-                    </div>
-                  </div>
-                  
-                  {/* Character Name */}
-                  <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'monospace', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
-                    {trainerCharacter.name}
+            {/* Coach Character Display */}
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="lg:col-span-1 space-y-8"
+            >
+              <div className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-6 relative" style={{ backdropFilter: 'blur(10px)' }}>
+                <div 
+                  className="cursor-pointer transform hover:scale-105 transition-transform duration-300"
+                  onClick={handleSpriteClick}
+                >
+                  <img 
+                    src="/coachbg.png" 
+                    alt="AI Coach" 
+                    className="w-full rounded-lg"
+                    style={{ imageRendering: 'pixelated' }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50 rounded-lg"></div>
+                  <h3 className="absolute bottom-4 left-4 text-xl font-bold text-yellow-300" style={{ textShadow: '2px 2px 4px #000' }}>
+                    AI COACH
                   </h3>
-                  
-                  {/* Character Type */}
-                  <div className="inline-block bg-black bg-opacity-30 px-3 py-1 rounded-lg border-2 border-white mb-3">
-                    <span className="text-white font-bold text-xs" style={{ fontFamily: 'monospace' }}>
-                      {trainerCharacter.type}
-                    </span>
-                  </div>
-                  
-                  {/* Sprite Counter */}
-                  <div className="text-white text-xs mb-3" style={{ fontFamily: 'monospace' }}>
-                    SPRITE: {currentSprite + 1}/{trainerCharacter.sprites.length}
-                  </div>
-                  
-                  {/* Character Description */}
-                  <p className="text-white text-xs opacity-90">
-                    {trainerCharacter.description}
-                  </p>
                 </div>
-              </div>
 
-              {/* Character Stats */}
-              <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl border-4 border-gray-600 shadow-2xl p-6 mt-4">
-                <h4 className="text-lg font-bold text-white mb-4 text-center" style={{ fontFamily: 'monospace' }}>
-                  📊 AI CAPABILITIES 📊
-                </h4>
-                
-                <StatBar 
-                  value={trainerCharacter.stats.intelligence}
-                  color="bg-gradient-to-r from-purple-400 to-purple-600"
-                  icon={<Zap className="h-4 w-4 text-purple-400" />}
-                  label="INTELLIGENCE"
-                />
-                <StatBar 
-                  value={trainerCharacter.stats.motivation}
-                  color="bg-gradient-to-r from-orange-400 to-orange-600"
-                  icon={<Heart className="h-4 w-4 text-orange-400" />}
-                  label="MOTIVATION"
-                />
-                <StatBar 
-                  value={trainerCharacter.stats.knowledge}
-                  color="bg-gradient-to-r from-green-400 to-green-600"
-                  icon={<Shield className="h-4 w-4 text-green-400" />}
-                  label="KNOWLEDGE"
-                />
-                <StatBar 
-                  value={trainerCharacter.stats.availability}
-                  color="bg-gradient-to-r from-blue-400 to-blue-600"
-                  icon={<Activity className="h-4 w-4 text-blue-400" />}
-                  label="AVAILABILITY"
-                />
+                {/* Speech Bubble */}
+                {isBubbleVisible && (
+                  <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-64 bg-white border-2 border-gray-300 rounded-lg p-3 shadow-lg animate-fade-in-down">
+                    <div className="absolute left-1/2 -translate-x-1/2 -top-[10px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-white"></div>
+                    <p className="text-center text-gray-800 text-sm font-semibold">{bubbleText}</p>
+                  </div>
+                )}
               </div>
-            </div>
+            </motion.div>
 
             {/* Chat Interface */}
-            <div className="lg:col-span-2">
-              <div className="bg-gradient-to-b from-amber-100 to-amber-200 rounded-2xl border-4 border-amber-600 shadow-2xl p-6 h-full">
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-amber-900 mb-2" style={{ fontFamily: 'monospace', textShadow: '1px 1px 2px rgba(0,0,0,0.3)' }}>
-                    💬 TRAINING CHAT 💬
-                  </h3>
-                  <p className="text-amber-800 text-sm">Get personalized advice and motivation!</p>
-                </div>
-
-                {/* Chat Messages Container */}
-                <div className="bg-white rounded-xl border-2 border-amber-400 p-4 mb-6 h-96 overflow-hidden flex flex-col">
-                  <div className="flex-1 overflow-y-auto space-y-3 mb-4">
-                    {messages.map((message) => (
-                      <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-xs lg:max-w-md flex items-start space-x-2 ${message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                          <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm ${message.sender === 'user' ? 'bg-green-500' : 'bg-cyan-500'}`}>
-                            {message.sender === 'user' ? '👤' : '🤖'}
-                          </div>
-                          <div className={`px-3 py-2 rounded-lg ${message.sender === 'user' ? 'bg-green-600 text-white' : 'bg-cyan-600 text-white'}`}>
-                            <p className="text-sm">{message.text}</p>
-                            <p className="text-xs opacity-70 mt-1">
-                              {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {isLoading && (
-                      <div className="flex justify-start">
-                        <div className="max-w-xs flex items-start space-x-2">
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center text-sm">
-                            🤖
-                          </div>
-                          <div className="px-3 py-2 rounded-lg bg-cyan-600 text-white">
-                            <div className="flex space-x-1">
-                              <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                              <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div ref={messagesEndRef} />
-                  </div>
-
-                  {/* Message Input */}
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder="Ask me anything about fitness..."
-                      className="flex-1 px-3 py-2 bg-gray-100 text-gray-800 rounded-lg border border-amber-400 focus:outline-none focus:border-amber-600 text-sm"
-                      disabled={isLoading}
-                    />
-                    <button
-                      onClick={handleSendMessage}
-                      disabled={isLoading || !inputText.trim()}
-                      className="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-gray-400 text-white rounded-lg border border-amber-400 transition-colors flex items-center"
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="lg:col-span-2 bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl flex flex-col h-[75vh]" 
+              style={{ backdropFilter: 'blur(10px)' }}
+            >
+              {/* Messages Container */}
+              <div className="flex-1 p-6 space-y-4 overflow-y-auto">
+                <AnimatePresence>
+                  {messages.map((msg) => (
+                    <motion.div
+                      key={msg.id}
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className={`flex items-start gap-4 ${msg.sender === 'user' ? 'justify-end' : ''}`}
                     >
-                      <Send size={16} />
-                    </button>
-                  </div>
-                </div>
+                      {msg.sender === 'ai' && (
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center border-2 border-indigo-400">
+                          <Bot className="w-6 h-6 text-white"/>
+                        </div>
+                      )}
+                      <div className={`max-w-md p-4 rounded-2xl ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-800 text-gray-200 rounded-bl-none'}`}>
+                        <p className="text-sm">{msg.text}</p>
+                        <span className="text-xs text-gray-400 mt-1 block text-right">
+                          {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      {msg.sender === 'user' && (
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center border-2 border-gray-600">
+                          <User className="w-6 h-6 text-white"/>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                {isLoading && (
+                   <motion.div 
+                     initial={{ opacity: 0 }}
+                     animate={{ opacity: 1 }}
+                     className="flex items-center justify-center"
+                   >
+                     <div className="flex items-center space-x-2 text-gray-400 text-sm">
+                        <Bot className="w-5 h-5 animate-pulse"/>
+                        <span>AI is typing...</span>
+                     </div>
+                   </motion.div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
 
-                {/* Quick Actions */}
-                <div className="grid grid-cols-2 gap-3">
-                  <button 
-                    onClick={() => setInputText("What workout should I do today?")}
-                    className="bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors"
+              {/* Input Area */}
+              <div className="p-4 border-t-2 border-gray-700">
+                <div className="relative">
+                  <textarea
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Ask your AI trainer anything..."
+                    className="w-full h-12 p-3 pr-20 bg-gray-800 border-2 border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white resize-none"
+                  />
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={isLoading}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 bg-yellow-500 rounded-lg hover:bg-yellow-600 disabled:bg-gray-500 transition-colors"
                   >
-                    🏋️ Workout Plan
-                  </button>
-                  <button 
-                    onClick={() => setInputText("How can I improve my nutrition?")}
-                    className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors"
-                  >
-                    🥗 Nutrition Tips
+                    <Send className="w-5 h-5 text-white" />
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* User Stats Display */}
-          <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-xl p-6 border-4 border-yellow-400">
-            <h3 className="text-yellow-300 font-bold mb-4 text-center text-lg" style={{ fontFamily: 'monospace' }}>⚡ YOUR CURRENT STATS ⚡</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div>
-                <div className="text-3xl font-bold text-white">{userStats.level}</div>
-                <div className="text-sm text-yellow-200">Level</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white">{userStats.workoutsCompleted}</div>
-                <div className="text-sm text-yellow-200">Workouts</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white">{userStats.streak}</div>
-                <div className="text-sm text-yellow-200">Day Streak</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white">{userStats.totalMinutes}</div>
-                <div className="text-sm text-yellow-200">Minutes</div>
-              </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </main>

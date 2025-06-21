@@ -7,11 +7,17 @@ export const API_ENDPOINTS = {
     ME: `${API_BASE_URL}/auth/me`,
     LOGOUT: `${API_BASE_URL}/auth/logout`
   },
+<<<<<<< HEAD
   VIDEO: {
     UPLOAD: `${API_BASE_URL}/video/upload`,
     ANALYZE: (analysisId) => `${API_BASE_URL}/video/analyze/${analysisId}`,
     GET_ANALYSIS: (analysisId) => `${API_BASE_URL}/video/analysis/${analysisId}`,
     GET_HISTORY: `${API_BASE_URL}/video/history`
+=======
+  PROFILE: {
+    GET: `${API_BASE_URL}/profile`,
+    UPDATE: `${API_BASE_URL}/profile`
+>>>>>>> origin
   }
 };
 

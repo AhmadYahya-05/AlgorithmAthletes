@@ -3,74 +3,97 @@
 import { useState, useEffect, useContext } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { LogOut, User, Trophy, Target, BarChart3, Sword, Shield, Heart, Download, Users, Star, Play } from 'lucide-react';
-import { UserContext } from '../App';
+import { UserContext } from '../context/UserContext';
 import CharacterCard from '../components/CharacterCard';
+import NavigationBar from '../components/NavigationBar';
+import { getCharacterSprite } from '../data/characters';
+import { useNavigate } from 'react-router-dom';
 
 const Home = ({ user, onLogout }) => {
-  const { userStats } = useContext(UserContext);
+  const { userStats, characterStats, activeCharacter } = useContext(UserContext);
+  const navigate = useNavigate();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   
   // Parallax transforms for different layers
-  const skyY = useTransform(scrollY, [0, 1000], [0, -100]);
-  const mountainsY = useTransform(scrollY, [0, 1000], [0, -200]);
-  const treesY = useTransform(scrollY, [0, 1000], [0, -300]);
-  const foregroundY = useTransform(scrollY, [0, 1000], [0, -400]);
+  const skyY = useTransform(scrollY, [0, 1000], [0, -50]);
 
   // Parallax Background Component
   const ParallaxBackground = () => (
-    <div className="fixed inset-0 z-0" style={{ imageRendering: 'pixelated' }}>
-      {/* Sky Layer - Night Theme */}
+    <div className="fixed inset-0 z-0 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
+      {/* Sky Layer */}
       <motion.div 
         style={{ y: skyY }}
-        className="absolute inset-0 bg-gradient-to-b from-gray-900 via-indigo-800 to-blue-900"
+        className="absolute inset-0 bg-gradient-to-b from-[#2D1B69] to-[#1E3A8A]"
       >
-        {/* Animated stars */}
-        <motion.div className="absolute top-10 left-1/4 text-xl opacity-80 text-yellow-200 animate-pulse">✨</motion.div>
-        <motion.div className="absolute top-20 right-1/3 text-lg opacity-70 text-yellow-200 animate-pulse" style={{animationDelay: '1s'}}>✨</motion.div>
-        <motion.div className="absolute top-32 left-1/2 text-sm opacity-90 text-yellow-200 animate-pulse" style={{animationDelay: '2s'}}>✨</motion.div>
-        <motion.div className="absolute top-40 right-1/4 text-md opacity-80 text-yellow-200 animate-pulse" style={{animationDelay: '0.5s'}}>✨</motion.div>
-        <motion.div className="absolute top-16 left-1/3 text-lg opacity-70 text-yellow-200 animate-pulse" style={{animationDelay: '1.5s'}}>✨</motion.div>
-        
+        {/* Stars */}
+        {[...Array(50)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute bg-white rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 80}%`, // Spread stars out more vertically
+              width: `${Math.random() * 2 + 1}px`,
+              height: `${Math.random() * 2 + 1}px`,
+            }}
+            animate={{ opacity: [0.2, 1, 0.2] }}
+            transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        ))}
         {/* Moon */}
-        <motion.div 
-          animate={{ y: [-5, 5, -5] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-12 right-16 text-6xl"
-        >
-          🌙
-        </motion.div>
-      </motion.div>
-
-      {/* Mountains Layer - Night Theme */}
-      <motion.div style={{ y: mountainsY }} className="absolute bottom-0 w-full h-64">
-        <div className="absolute bottom-0 w-full h-full bg-gradient-to-t from-gray-800 to-indigo-900 opacity-90" 
-             style={{ 
-               clipPath: 'polygon(0 100%, 0 60%, 10% 50%, 20% 65%, 30% 45%, 40% 55%, 50% 40%, 60% 50%, 70% 35%, 80% 45%, 90% 30%, 100% 40%, 100% 100%)'
-             }} />
-        <div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-gray-900 to-gray-800 opacity-80" 
-             style={{ 
-               clipPath: 'polygon(0 100%, 0 70%, 15% 55%, 25% 70%, 35% 50%, 45% 60%, 55% 45%, 65% 55%, 75% 40%, 85% 50%, 95% 35%, 100% 45%, 100% 100%)'
-             }} />
-      </motion.div>
-
-      {/* Trees Layer - Darker Silhouettes */}
-      <motion.div style={{ y: treesY, filter: 'brightness(0.5)' }} className="absolute bottom-0 w-full">
-        <div className="absolute bottom-16 left-10 text-8xl">🌲</div>
-        <div className="absolute bottom-20 left-32 text-7xl">🌳</div>
-        <div className="absolute bottom-12 right-20 text-9xl">🌲</div>
-        <div className="absolute bottom-24 right-40 text-6xl">🌳</div>
-        <div className="absolute bottom-8 left-1/2 text-7xl">🌲</div>
-        <div className="absolute bottom-16 left-1/3 text-8xl">🌳</div>
-      </motion.div>
-
-      {/* Foreground Elements - Fireflies */}
-      <motion.div style={{ y: foregroundY }} className="absolute bottom-0 w-full">
-        <motion.div className="absolute bottom-8 left-1/4 text-yellow-300 text-lg animate-pulse">✨</motion.div>
-        <motion.div className="absolute bottom-6 right-1/4 text-yellow-300 text-lg animate-pulse" style={{animationDelay: '1s'}}>✨</motion.div>
-        <motion.div className="absolute bottom-2 left-3/4 text-yellow-300 text-lg animate-pulse" style={{animationDelay: '0.5s'}}>✨</motion.div>
+        <div className="absolute top-12 right-16 text-6xl opacity-90">🌙</div>
       </motion.div>
     </div>
+  );
+
+  const LogoSVG = () => (
+    <svg viewBox="0 0 800 150" className="w-full max-w-3xl mx-auto">
+      <defs>
+        <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="4" dy="4" stdDeviation="0" floodColor="#d97706" />
+          <feDropShadow dx="8" dy="8" stdDeviation="0" floodColor="rgba(0,0,0,0.3)" />
+        </filter>
+        <style>
+          {`@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');`}
+        </style>
+      </defs>
+      
+      {/* Decorative Vines */}
+      <motion.path
+        d="M 20,90 Q 50,40 100,60 T 180,70"
+        fill="none"
+        stroke="#10B981"
+        strokeWidth="5"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 780,90 Q 750,40 700,60 T 620,70"
+        fill="none"
+        stroke="#10B981"
+        strokeWidth="5"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
+      />
+
+      <text
+        x="50%"
+        y="50%"
+        dy=".3em"
+        textAnchor="middle"
+        fontSize="80"
+        fontFamily="VT323, monospace"
+        fill="#fcd34d" // yellow-300
+        style={{ filter: 'url(#text-shadow)' }}
+      >
+        FITNESS QUEST
+      </text>
+    </svg>
   );
 
   // Pixel Art Logo Component
@@ -78,7 +101,6 @@ const Home = ({ user, onLogout }) => {
     <motion.div 
       animate={{ 
         scale: [1, 1.02, 1],
-        rotateY: [0, 2, 0, -2, 0]
       }}
       transition={{ 
         duration: 4, 
@@ -87,17 +109,7 @@ const Home = ({ user, onLogout }) => {
       }}
       className="text-center mb-8"
     >
-      <h1 
-        className="text-6xl md:text-8xl font-bold text-yellow-300 mb-4"
-        style={{ 
-          fontFamily: 'monospace',
-          textShadow: '4px 4px 0px #d97706, 8px 8px 0px rgba(0,0,0,0.3)',
-          imageRendering: 'pixelated',
-          letterSpacing: '0.1em'
-        }}
-      >
-        FITNESS QUEST
-      </h1>
+      <LogoSVG />
       <motion.div 
         animate={{ rotate: [0, 5, -5, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -111,110 +123,19 @@ const Home = ({ user, onLogout }) => {
     </motion.div>
   );
 
-  // Navigation Bar Component
-  const NavigationBar = () => (
-    <motion.nav 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className="fixed top-0 w-full z-50 bg-gray-900 bg-opacity-80 border-b border-gray-700 shadow-lg"
-      style={{ backdropFilter: 'blur(10px)' }}
-    >
-      <div className="w-full px-8">
-        <div className="flex justify-between items-center h-16">
-          <motion.div 
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            className="flex items-center cursor-pointer"
-          >
-            <div className="text-2xl mr-3 animate-pulse">⚔️</div>
-            <span className="text-xl font-bold text-cyan-300" style={{ fontFamily: 'monospace' }}>
-              FITNESS QUEST
-            </span>
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {['About', 'Features', 'Community'].map((item) => (
-              <motion.button
-                key={item}
-                whileHover={{ scale: 1.1, y: -2, color: '#67e8f9' }} // cyan-300
-                whileTap={{ scale: 0.95 }}
-                className="text-gray-300 font-semibold transition-colors"
-                style={{ fontFamily: 'monospace' }}
-              >
-                {item}
-              </motion.button>
-            ))}
-          </div>
-
-          {/* Profile Dropdown */}
-          <div className="relative">
-            <motion.button
-              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center space-x-2 bg-black bg-opacity-30 px-3 py-2 rounded-lg border border-cyan-400"
-            >
-              <div className="text-cyan-300">👤</div>
-              <span className="text-cyan-100 font-bold text-sm">
-                {user?.firstName}
-              </span>
-            </motion.button>
-            
-            <AnimatePresence>
-              {isProfileMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden"
-                >
-                  <ul className="py-1">
-                    <li className="px-4 py-2 text-sm text-gray-400">
-                      Welcome, {user?.firstName}!
-                    </li>
-                    <li className="border-t border-gray-700"></li>
-                    <li>
-                      <a href="#" className="flex items-center w-full px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">
-                        <BarChart3 className="h-4 w-4 mr-2" />
-                        My Stats
-                      </a>
-                    </li>
-                    <li>
-                      <button
-                        onClick={onLogout}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700"
-                      >
-                        <LogOut className="h-4 w-4 mr-2" />
-                        <span>Quit</span>
-                      </button>
-                    </li>
-                  </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
-    </motion.nav>
-  );
-
-  // Animated Character Component
-  const AnimatedCharacter = ({ emoji, delay = 0, position }) => (
-    <motion.div 
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ 
-        opacity: 1, 
-        y: [0, -10, 0],
-        rotate: [0, 2, -2, 0]
-      }}
+  // Floating Character Component
+  const AnimatedCharacter = ({ emoji, delay, position }) => (
+    <motion.div
+      className={`absolute text-4xl ${position}`}
+      style={{ filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))' }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: [0, 0.7, 0], y: [20, -20, 20] }}
       transition={{ 
-        duration: 3, 
+        duration: Math.random() * 5 + 5, 
         repeat: Infinity, 
-        ease: "easeInOut",
-        delay: delay 
+        delay,
+        ease: "easeInOut"
       }}
-      className={`absolute text-6xl ${position}`}
-      style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.3))' }}
     >
       {emoji}
     </motion.div>
@@ -232,10 +153,12 @@ const Home = ({ user, onLogout }) => {
           transition={{ delay: 0.5, duration: 0.8 }}
           className="mb-8"
         >
-          <p className="text-lg md:text-xl text-gray-300 mb-6 leading-relaxed">
-            Welcome to your personal fitness adventure! Level up your health, complete quests, 
-            and become the hero of your own story.
-          </p>
+          <div className="bg-gray-900 bg-opacity-70 rounded-xl border-2 border-yellow-400 p-6 max-w-2xl mx-auto shadow-lg mb-12" style={{ backdropFilter: 'blur(5px)'}}>
+            <p className="text-lg md:text-xl text-yellow-100 leading-relaxed" style={{ fontFamily: 'monospace' }}>
+              Welcome to your personal fitness adventure! Level up your health, complete quests, 
+              and become the hero of your own story.
+            </p>
+          </div>
           
           <motion.button
             whileHover={{ 
@@ -259,18 +182,20 @@ const Home = ({ user, onLogout }) => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.8, duration: 0.6 }}
-          className="inline-block bg-gradient-to-b from-purple-600 to-indigo-700 rounded-2xl p-6 border-4 border-white shadow-2xl mb-12"
+          className="relative inline-block bg-gradient-to-b from-purple-600 to-indigo-700 rounded-2xl p-6 border-4 border-white shadow-2xl mb-12"
           style={{
             boxShadow: '0 8px 16px rgba(0,0,0,0.4), inset 0 2px 8px rgba(255,255,255,0.3)'
           }}
+          whileHover={{ scale: 1.05, y: -5 }}
+          onClick={() => navigate('/character')}
         >
-          <div className="mb-4">
-            <div className="bg-black bg-opacity-70 px-4 py-2 rounded-lg border-2 border-yellow-400 inline-block">
+            <div className="mb-4">
+              <div className="bg-black bg-opacity-70 px-4 py-2 rounded-lg border-2 border-yellow-400 inline-block">
               <span className="text-yellow-300 font-bold text-lg" style={{ fontFamily: 'monospace' }}>
-                @{user?.username || `${user?.firstName?.toLowerCase()}`}
-              </span>
+                  @{user?.username || `${user?.firstName?.toLowerCase()}`}
+                </span>
+              </div>
             </div>
-          </div>
 
           <motion.div 
             animate={{ 
@@ -282,21 +207,26 @@ const Home = ({ user, onLogout }) => {
               repeat: Infinity, 
               ease: "easeInOut" 
             }}
-            className="text-9xl mb-4"
-            style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.5))' }}
-          >
-            {userStats.level >= 10 ? '🧙‍♂️' : userStats.level >= 5 ? '⚔️' : '🏃‍♂️'}
+            className="text-9xl mb-4 h-32 flex justify-center items-center"
+                style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.5))' }}
+              >
+            <img 
+              src={getCharacterSprite(activeCharacter, characterStats)} 
+              alt="Selected Character" 
+              className="max-h-full"
+              style={{ imageRendering: 'pixelated' }}
+            />
           </motion.div>
 
-          <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-full w-12 h-12 flex items-center justify-center border-3 border-yellow-400 font-bold text-lg shadow-lg">
-            {userStats.level}
-          </div>
-
-          <div className="mt-4">
-            <div className="text-xs font-bold text-white mb-1" style={{ fontFamily: 'monospace' }}>
-              XP: {userStats.xp} / {userStats.xpToNext}
+              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-full w-12 h-12 flex items-center justify-center border-3 border-yellow-400 font-bold text-lg shadow-lg">
+                {userStats.level}
             </div>
-            <div className="w-48 h-4 bg-gray-800 rounded-full border-2 border-gray-600 mx-auto overflow-hidden">
+
+            <div className="mt-4">
+              <div className="text-xs font-bold text-white mb-1" style={{ fontFamily: 'monospace' }}>
+                XP: {userStats.xp} / {userStats.xpToNext}
+              </div>
+              <div className="w-48 h-4 bg-gray-800 rounded-full border-2 border-gray-600 mx-auto overflow-hidden">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: `${(userStats.xp / userStats.xpToNext) * 100}%` }}
@@ -306,7 +236,7 @@ const Home = ({ user, onLogout }) => {
             </div>
           </div>
         </motion.div>
-      </div>
+        </div>
 
       {/* Floating animated characters */}
       <AnimatedCharacter emoji="🏃‍♀️" delay={0} position="top-1/4 left-10" />
@@ -371,14 +301,14 @@ const Home = ({ user, onLogout }) => {
               viewport={{ once: true }}
               className={`bg-gradient-to-b ${stat.color} rounded-xl p-6 border-4 ${stat.border} shadow-2xl`}
             >
-              <div className="flex items-center justify-between">
-                <div>
+            <div className="flex items-center justify-between">
+              <div>
                   <div className="flex items-center mb-2 text-white">
                     {stat.icon}
                     <span className="font-bold ml-2" style={{ fontFamily: 'monospace' }}>
                       {stat.label}
                     </span>
-                  </div>
+                </div>
                   <div className="text-3xl font-bold text-white">{stat.value}</div>
                 </div>
                 <motion.div 
@@ -413,16 +343,16 @@ const Home = ({ user, onLogout }) => {
       className="relative z-10 px-8 py-16"
     >
       <div className="max-w-6xl mx-auto">
-        <div className="bg-gradient-to-b from-amber-100 to-amber-200 rounded-2xl border-4 border-amber-600 shadow-2xl p-8">
+        <div className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-8" style={{ backdropFilter: 'blur(10px)' }}>
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-8"
           >
-            <h3 className="text-3xl font-bold text-amber-900 mb-2" style={{ fontFamily: 'monospace' }}>
+            <h3 className="text-3xl font-bold text-yellow-300 mb-2" style={{ fontFamily: 'monospace' }}>
               🗞️ QUEST BOARD 🗞️
             </h3>
-            <p className="text-amber-800 text-lg">Choose your next adventure!</p>
+            <p className="text-gray-300 text-lg">Choose your next adventure!</p>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -489,13 +419,13 @@ const Home = ({ user, onLogout }) => {
   return (
     <div className="min-h-screen relative" style={{ imageRendering: 'pixelated' }}>
       <ParallaxBackground />
-      <NavigationBar />
+      <NavigationBar user={user} onLogout={onLogout} />
       
       <main className="relative z-10">
         <HeroSection />
         <StatsPanel />
         <QuestBoard />
-        
+
         {/* Achievement Banner */}
         <motion.section 
           initial={{ opacity: 0, scale: 0.9 }}
@@ -509,7 +439,7 @@ const Home = ({ user, onLogout }) => {
               whileHover={{ scale: 1.05, y: -5 }}
               className="inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 px-8 py-6 rounded-2xl border-4 border-yellow-700 shadow-2xl"
             >
-              <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
                 <motion.div 
                   animate={{ rotate: 360 }}
                   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -517,10 +447,10 @@ const Home = ({ user, onLogout }) => {
                 >
                   🌟
                 </motion.div>
-                <div>
+              <div>
                   <h4 className="font-bold text-yellow-900 text-xl mb-1" style={{ fontFamily: 'monospace' }}>
-                    Next Achievement: Week Warrior
-                  </h4>
+                  Next Achievement: Week Warrior
+                </h4>
                   <p className="text-yellow-800">Complete 7 days in a row (7/7)</p>
                 </div>
                 <motion.div 
@@ -535,34 +465,6 @@ const Home = ({ user, onLogout }) => {
           </div>
         </motion.section>
       </main>
-
-      {/* Floating Particles */}
-      <div className="fixed inset-0 pointer-events-none z-5">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ 
-              x: Math.random() * window.innerWidth,
-              y: window.innerHeight + 50,
-              opacity: 0
-            }}
-            animate={{
-              y: -50,
-              opacity: [0, 1, 0],
-              x: Math.random() * window.innerWidth
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              delay: Math.random() * 5,
-              ease: "easeInOut"
-            }}
-            className="absolute text-2xl"
-          >
-            {['✨', '💫', '🌟', '✨', '💫', '🌟'][i]}
-          </motion.div>
-        ))}
-      </div>
     </div>
   );
 };
