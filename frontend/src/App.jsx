@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import ExerciseForm from './pages/ExerciseForm';
 import './App.css';
 
 function App() {
@@ -92,6 +93,14 @@ function App() {
             element={
               isAuthenticated ? 
                 <Home user={user} onLogout={logout} /> : 
+                <Navigate to="/login" replace />
+            } 
+          />
+          <Route 
+            path="/exercise-form" 
+            element={
+              isAuthenticated ? 
+                <ExerciseForm user={user} onLogout={logout} /> : 
                 <Navigate to="/login" replace />
             } 
           />

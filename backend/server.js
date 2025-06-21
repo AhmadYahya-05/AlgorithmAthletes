@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './src/routes/auth.js';
 import userRoutes from './src/routes/user.js';
+import exerciseRoutes from './src/routes/exercise.js';
 
 // Load environment variables
 dotenv.config();
@@ -30,6 +31,7 @@ const connectDB = async () => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/exercise', exerciseRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

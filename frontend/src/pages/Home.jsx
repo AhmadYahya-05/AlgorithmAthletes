@@ -1,10 +1,17 @@
 // This will be the home page users are directed to after logging in / creating an account 
 
-import { LogOut, User, Trophy, Target, BarChart3 } from 'lucide-react';
+import { LogOut, User, Trophy, Target, BarChart3, Video } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Home = ({ user, onLogout }) => {
+  const navigate = useNavigate();
+  
   const handleLogout = () => {
     onLogout();
+  };
+
+  const handleExerciseForm = () => {
+    navigate('/exercise-form');
   };
 
   return (
@@ -115,6 +122,17 @@ const Home = ({ user, onLogout }) => {
                 <h4 className="font-semibold text-gray-900">Leaderboard</h4>
               </div>
               <p className="text-gray-600 text-sm">See how you rank among others</p>
+            </button>
+
+            <button 
+              onClick={handleExerciseForm}
+              className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-orange-400 hover:bg-orange-50 transition duration-200 text-left"
+            >
+              <div className="flex items-center mb-3">
+                <Video className="h-6 w-6 text-orange-600 mr-3" />
+                <h4 className="font-semibold text-gray-900">Exercise Form Analysis</h4>
+              </div>
+              <p className="text-gray-600 text-sm">Get AI feedback on your exercise form</p>
             </button>
           </div>
         </div>
