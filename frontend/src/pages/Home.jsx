@@ -441,6 +441,17 @@ const Home = ({ user, onLogout }) => {
               borderColor="border-cyan-700"
               textColor="text-cyan-100"
             />
+
+            <CharacterCard 
+              name="PARTY SCREEN"
+              emoji="🎮"
+              description="View and manage your characters"
+              xpReward="VIEW"
+              route="/character"
+              bgColor="from-purple-400 to-purple-600"
+              borderColor="border-purple-700"
+              textColor="text-purple-100"
+            />
           </div>
         </div>
       </div>
