@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo } from 'react';
+import { createContext, useState, useMemo, useCallback } from 'react';
 
 // Create User Context
 export const UserContext = createContext();
@@ -51,17 +51,17 @@ export const UserProvider = ({ children }) => {
     return armStrength + backStrength + legStrength;
   }, [characterStats.armStrength, characterStats.backStrength, characterStats.legStrength]);
 
-  const updateUserStats = (newStats) => {
+  const updateUserStats = useCallback((newStats) => {
     setUserStats(prev => ({ ...prev, ...newStats }));
-  };
+  }, []);
 
-  const updateCharacterStats = (newStats) => {
+  const updateCharacterStats = useCallback((newStats) => {
     setCharacterStats(prev => ({ ...prev, ...newStats }));
-  };
+  }, []);
 
-  const updateProfileData = (newData) => {
+  const updateProfileData = useCallback((newData) => {
     setProfileData(prev => ({ ...prev, ...newData }));
-  };
+  }, []);
 
   return (
     <UserContext.Provider value={{ 
