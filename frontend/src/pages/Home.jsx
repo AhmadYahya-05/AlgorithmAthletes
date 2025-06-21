@@ -158,8 +158,8 @@ const Home = ({ user, onLogout }) => {
               Welcome to your personal fitness adventure! Level up your health, complete quests, 
               and become the hero of your own story.
             </p>
-          </div>
-          
+      </div>
+
           <motion.button
             whileHover={{ 
               scale: 1.05, 

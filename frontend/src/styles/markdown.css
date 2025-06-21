@@ -1,0 +1,93 @@
+/* Markdown container styles */
+.markdown {
+  line-height: 1.6;
+  color: #E5E7EB; /* Light gray text for dark backgrounds */
+}
+
+.markdown-user {
+  color: #FFFFFF; /* White text for user messages */
+}
+
+/* Headings */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  border-bottom: 1px solid #4B5563; /* Gray border */
+  padding-bottom: 0.3rem;
+}
+
+.markdown h1 { font-size: 1.875rem; }
+.markdown h2 { font-size: 1.5rem; }
+.markdown h3 { font-size: 1.25rem; }
+
+/* Paragraphs */
+.markdown p {
+  margin-bottom: 1rem;
+}
+
+/* Lists */
+.markdown ul,
+.markdown ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.markdown li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown ul {
+  list-style-type: disc;
+}
+
+.markdown ol {
+  list-style-type: decimal;
+}
+
+/* Bold and Italic */
+.markdown strong {
+  font-weight: 700;
+  color: #FBBF24; /* Amber color for emphasis */
+}
+
+.markdown em {
+  font-style: italic;
+  color: #A5B4FC; /* Indigo color for emphasis */
+}
+
+/* Blockquotes */
+.markdown blockquote {
+  margin-left: 0;
+  padding-left: 1rem;
+  border-left: 4px solid #6B7280; /* Gray border */
+  color: #9CA3AF; /* Lighter gray text */
+  font-style: italic;
+}
+
+/* Code blocks */
+.markdown pre {
+  background-color: #111827; /* Very dark gray */
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.markdown code {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #374151; /* Darker gray */
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.markdown pre code {
+  background-color: transparent;
+  padding: 0;
+} 
