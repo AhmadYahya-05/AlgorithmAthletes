@@ -27,12 +27,14 @@ const AIChatbotPage = ({ user, onLogout }) => {
   const [bubbleText, setBubbleText] = useState('');
   const [isBubbleVisible, setIsBubbleVisible] = useState(false);
 
-  const dialogueOptions = [
-    "You want MOTIVATION? Here's motivation: DON'T SUCK today.",
-    "Listen up, CHAMPION—wait, you're NOT one yet. But you WILL be if you SURVIVE my training.",
-    "Every SECOND you waste STARING at me is a second you COULD be getting STRONGER. MOVE.",
-    "Your legs shaking? GOOD. That means they're working!"
-  ];
+  const dialogueOptions = 
+    `- Age: ${profileData.chronologicalAge || 'Not provided'} - Height: ${profileData.height || 'Not provided'} cm - Weight: ${profileData.weight || 'Not provided'} kg - Exercise Frequency: ${profileData.exerciseFrequency || 'Not provided'} days/week - Strength Level: ${profileData.strengthLevel || 'Not provided'} - Cardio Performance: ${profileData.cardioPerformance || 'Not provided'} `
+
+    //"You want MOTIVATION? Here's motivation: DON'T SUCK today.",
+    //"Listen up, CHAMPION—wait, you're NOT one yet. But you WILL be if you SURVIVE my training.",
+    //"Every SECOND you waste STARING at me is a second you COULD be getting STRONGER. MOVE.",
+    //"Your legs shaking? GOOD. That means they're working!"
+  ;
 
   const handleSpriteClick = () => {
     const randomDialogue = dialogueOptions[Math.floor(Math.random() * dialogueOptions.length)];
