@@ -1,9 +1,11 @@
 import { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../App';
 import Header from '../components/Header';
+import { useNavigate } from 'react-router-dom';
 
 const NutritionistPage = ({ user, onLogout }) => {
   const { userStats } = useContext(UserContext);
+  const navigate = useNavigate();
   const [bubbleText, setBubbleText] = useState('');
   const [isBubbleVisible, setIsBubbleVisible] = useState(false);
 
@@ -40,7 +42,12 @@ const NutritionistPage = ({ user, onLogout }) => {
         <div className="absolute bottom-20 right-1/4 text-2xl animate-bounce opacity-50" style={{ animationDelay: '3s' }}>🥕</div>
       </div>
 
-      <Header user={user} onLogout={onLogout} title="NUTRITIONIST" />
+      <Header 
+        user={user} 
+        onLogout={onLogout} 
+        title="NUTRITIONIST" 
+        onNavigateBack={() => navigate('/')}
+      />
 
       {/* Main Content Area */}
       <main className="relative z-10 w-full px-8 py-8">
