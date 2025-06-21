@@ -25,9 +25,14 @@ const NavigationBar = ({ user, onLogout }) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {['About', 'Features', 'Community'].map((item) => (
+            {['About', 'Features', 'Community', 'My Profile'].map((item) => (
               <motion.button
                 key={item}
+                onClick={() => {
+                  if (item === 'My Profile') {
+                    window.location.href = '/profile';
+                  }
+                }}
                 whileHover={{ scale: 1.1, y: -2, color: '#fcd34d' }} // yellow-300
                 whileTap={{ scale: 0.95 }}
                 className="text-gray-300 font-semibold transition-colors"
@@ -66,7 +71,7 @@ const NavigationBar = ({ user, onLogout }) => {
                     </li>
                     <li className="border-t border-gray-700"></li>
                     <li>
-                      <a href="#" className="flex items-center w-full px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-yellow-300">
+                      <a href="/profile" className="flex items-center w-full px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-yellow-300">
                         <BarChart3 className="h-4 w-4 mr-2" />
                         My Stats
                       </a>

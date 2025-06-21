@@ -7,6 +7,7 @@ import NutritionistPage from './pages/NutritionistPage';
 import PersonalTrainerPage from './pages/PersonalTrainerPage';
 import AIChatbotPage from './pages/AIChatbotPage';
 import Character from './pages/Character';
+import ProfilePage from './pages/ProfilePage';
 import { API_ENDPOINTS } from './config/api.js';
 import './App.css';
 import { UserProvider } from './context/UserContext.jsx';
@@ -131,6 +132,14 @@ function App() {
               element={
                 isAuthenticated ? 
                   <Character user={user} onLogout={logout} onNavigateBack={() => window.history.back()} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                isAuthenticated ? 
+                  <ProfilePage user={user} onLogout={logout} /> : 
                   <Navigate to="/login" replace />
               } 
             />
