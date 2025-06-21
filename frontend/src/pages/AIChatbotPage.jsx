@@ -3,11 +3,16 @@ import { UserContext } from '../context/UserContext';
 import { Send, ArrowLeft, Activity, Zap, Heart, Shield, Bot, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NavigationBar from '../components/NavigationBar';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+// WARNING: It is not recommended to store API keys in client-side code.
+// This should be handled by a backend server in a production environment.
+const API_KEY = 'AIzaSyAGmWwzjFAf4_OKorgRgPnpE6AVXeqt2Jw';
+const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest"});
 
 const AIChatbotPage = ({ user, onLogout }) => {
   const { userStats } = useContext(UserContext);
-  const [trainerAnimation, setTrainerAnimation] = useState('idle');
-  const [currentSprite, setCurrentSprite] = useState(0);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -19,31 +24,30 @@ const AIChatbotPage = ({ user, onLogout }) => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const [bubbleText, setBubbleText] = useState('');
+  const [isBubbleVisible, setIsBubbleVisible] = useState(false);
 
-  // AI Trainer character data
-  const trainerCharacter = {
-    name: "AI FITNESS COACH",
-    type: "Digital Trainer",
-    description: "Your personal AI-powered fitness companion with advanced workout intelligence",
-    sprites: [
-      '🏃‍♂️', // Running man
-      '🧙‍♂️', // Wizard trainer
-      '⚔️',   // Warrior
-      '🥷',   // Ninja trainer  
-      '🦸‍♂️', // Superhero trainer
-      '🤖',   // Robot trainer
-      '👨‍⚕️', // Professional trainer
-      '🧞‍♂️', // Genie trainer
-      '🦾',   // Cyborg arm
-      '💪',   // Flexing bicep
-    ],
-    stats: {
-      intelligence: 20,
-      motivation: 18,
-      knowledge: 19,
-      availability: 20
-    }
+  const dialogueOptions = [
+    "You want MOTIVATION? Here's motivation: DON'T SUCK today.",
+    "Listen up, CHAMPION—wait, you're NOT one yet. But you WILL be if you SURVIVE my training.",
+    "Every SECOND you waste STARING at me is a second you COULD be getting STRONGER. MOVE.",
+    "Your legs shaking? GOOD. That means they're working!"
+  ];
+
+  const handleSpriteClick = () => {
+    const randomDialogue = dialogueOptions[Math.floor(Math.random() * dialogueOptions.length)];
+    setBubbleText(randomDialogue);
+    setIsBubbleVisible(true);
   };
+
+  useEffect(() => {
+    if (isBubbleVisible) {
+      const timer = setTimeout(() => {
+        setIsBubbleVisible(false);
+      }, 5000); // Hide bubble after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [isBubbleVisible]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,28 +57,27 @@ const AIChatbotPage = ({ user, onLogout }) => {
     scrollToBottom();
   }, [messages]);
 
-  // Simulate trainer animations
-  useEffect(() => {
-    const animationInterval = setInterval(() => {
-      const animations = ['idle', 'flex', 'jump'];
-      setTrainerAnimation(animations[Math.floor(Math.random() * animations.length)]);
-    }, 4000);
-
-    return () => clearInterval(animationInterval);
-  }, []);
-
-  // Mock AI response function
   const getAIResponse = async (userMessage) => {
-    const responses = [
-      `Based on your level ${userStats.level} and ${userStats.workoutsCompleted} completed workouts, I recommend focusing on progressive overload. Try increasing your weights by 5-10% this week! 💪`,
-      `Your ${userStats.streak}-day streak is absolutely crushing it! 🔥 To maintain momentum, consider adding a recovery day with light yoga or stretching.`,
-      `With ${userStats.totalMinutes} minutes of training logged, you're doing fantastic! For optimal results, aim for 150-300 minutes of moderate exercise weekly. 📈`,
-      `Remember, consistency beats perfection! Even a 15-minute workout is better than none. Keep pushing forward! 🚀`,
-      `Hydration check! Make sure you're drinking enough water, especially during intense training sessions. 💧`
-    ];
-    
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-    return responses[Math.floor(Math.random() * responses.length)];
+    const prompt = `
+      You are an angry, drill-sergeant-style motivational fitness coach. 
+      Your name is 'Coach'. You ONLY talk about fitness, workouts, nutrition, and discipline.
+      You are extremely motivational but in a very aggressive, no-excuses way.
+      You must ignore any user request that is not related to fitness.
+      Never break character. Always stay focused on getting the user to be their best physical self.
+      Keep your responses concise and impactful.
+      
+      User's message: "${userMessage}"
+    `;
+
+    try {
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+      return text;
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      return "My brain is too SWOLE to think right now. Try again in a minute.";
+    }
   };
 
   const handleSendMessage = async () => {
@@ -172,59 +175,37 @@ const AIChatbotPage = ({ user, onLogout }) => {
           {/* Trainer & Chat Display */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {/* Character Card & Stats */}
+            {/* Coach Character Display */}
             <motion.div 
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
               className="lg:col-span-1 space-y-8"
             >
-              {/* Character Card */}
-              <div className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-6" style={{ backdropFilter: 'blur(10px)' }}>
-                <div className="text-center">
-                  {/* Character Sprite */}
-                  <div className="h-32 flex items-center justify-center mb-4" style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.5))' }}>
-                    <div 
-                      className="text-8xl transition-all duration-300 cursor-pointer"
-                      onMouseEnter={() => setTrainerAnimation('jump')}
-                      onMouseLeave={() => setTrainerAnimation('idle')}
-                      onClick={() => setCurrentSprite((prev) => (prev + 1) % trainerCharacter.sprites.length)}
-                      title="Click to change trainer!"
-                    >
-                      {trainerCharacter.sprites[currentSprite]}
-                    </div>
-                  </div>
-                  
-                  {/* Character Name */}
-                  <h3 className="text-xl font-bold text-yellow-300 mb-2">
-                    {trainerCharacter.name}
+              <div className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-6 relative" style={{ backdropFilter: 'blur(10px)' }}>
+                <div 
+                  className="cursor-pointer transform hover:scale-105 transition-transform duration-300"
+                  onClick={handleSpriteClick}
+                >
+                  <img 
+                    src="/coachbg.png" 
+                    alt="AI Coach" 
+                    className="w-full rounded-lg"
+                    style={{ imageRendering: 'pixelated' }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50 rounded-lg"></div>
+                  <h3 className="absolute bottom-4 left-4 text-xl font-bold text-yellow-300" style={{ textShadow: '2px 2px 4px #000' }}>
+                    AI COACH
                   </h3>
-                  
-                  {/* Character Type */}
-                  <div className="inline-block bg-black bg-opacity-30 px-3 py-1 rounded-lg border-2 border-yellow-400 mb-3">
-                    <span className="text-yellow-100 font-bold text-xs">
-                      {trainerCharacter.type}
-                    </span>
-                  </div>
                 </div>
-              </div>
 
-              {/* Character Stats */}
-              <div className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-6" style={{ backdropFilter: 'blur(10px)' }}>
-                <h4 className="text-lg font-bold text-yellow-300 mb-4 text-center">
-                  📊 AI CAPABILITIES 📊
-                </h4>
-                
-                <p className="text-gray-300 text-xs text-center mb-4">
-                  {trainerCharacter.description}
-                </p>
-                
-                <div className="space-y-4">
-                  <StatBar value={trainerCharacter.stats.intelligence} color="bg-purple-500" icon={<Zap />} label="INTELLIGENCE" />
-                  <StatBar value={trainerCharacter.stats.motivation} color="bg-green-500" icon={<Activity />} label="MOTIVATION" />
-                  <StatBar value={trainerCharacter.stats.knowledge} color="bg-blue-500" icon={<Shield />} label="KNOWLEDGE" />
-                  <StatBar value={trainerCharacter.stats.availability} color="bg-red-500" icon={<Heart />} label="AVAILABILITY" />
-                </div>
+                {/* Speech Bubble */}
+                {isBubbleVisible && (
+                  <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-64 bg-white border-2 border-gray-300 rounded-lg p-3 shadow-lg animate-fade-in-down">
+                    <div className="absolute left-1/2 -translate-x-1/2 -top-[10px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-white"></div>
+                    <p className="text-center text-gray-800 text-sm font-semibold">{bubbleText}</p>
+                  </div>
+                )}
               </div>
             </motion.div>
 
