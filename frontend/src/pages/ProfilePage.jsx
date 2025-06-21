@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { UserContext } from '../context/UserContext';
 import NavigationBar from '../components/NavigationBar';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../config/api';
 
 const ProfilePage = ({ user, onLogout }) => {
   const { userStats } = useContext(UserContext);
@@ -13,16 +14,43 @@ const ProfilePage = ({ user, onLogout }) => {
     systolicBP: '',
     diastolicBP: '',
   });
+  const [status, setStatus] = useState({ loading: false, error: null, success: false });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: valueAsNumber || value }));
+    // Use valueAsNumber for number inputs if browser supports it, otherwise parse it
+    const parsedValue = e.target.type === 'number' ? e.target.valueAsNumber || parseFloat(e.target.value) : value;
+    setFormData(prev => ({ ...prev, [name]: parsedValue }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form data submitted:', formData);
-    // TODO: Send data to backend
+    setStatus({ loading: true, error: null, success: false });
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(API_ENDPOINTS.PROFILE.UPDATE, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update profile.');
+      }
+
+      setStatus({ loading: false, error: null, success: true });
+      console.log('Profile updated successfully:', data);
+
+    } catch (error) {
+      setStatus({ loading: false, error: error.message, success: false });
+      console.error('Error updating profile:', error);
+    }
   };
 
   return (
@@ -154,13 +182,22 @@ const ProfilePage = ({ user, onLogout }) => {
               <div className="text-center mt-8">
                 <motion.button
                   type="submit"
-                  whileHover={{ scale: 1.05, y: -2, boxShadow: '0px 8px 20px rgba(252, 211, 77, 0.3)' }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-8 rounded-lg shadow-lg"
+                  disabled={status.loading}
+                  whileHover={{ scale: status.loading ? 1 : 1.05, y: status.loading ? 0 : -2, boxShadow: '0px 8px 20px rgba(252, 211, 77, 0.3)' }}
+                  whileTap={{ scale: status.loading ? 1 : 0.95 }}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-8 rounded-lg shadow-lg disabled:bg-gray-500 disabled:cursor-not-allowed"
                 >
-                  Save & Continue
+                  {status.loading ? 'Saving...' : 'Save & Continue'}
                 </motion.button>
               </div>
+
+              {/* Status Messages */}
+              {status.success && (
+                <p className="text-center mt-4 text-green-400">Profile saved successfully!</p>
+              )}
+              {status.error && (
+                <p className="text-center mt-4 text-red-400">Error: {status.error}</p>
+              )}
             </form>
           </div>
         </motion.div>
