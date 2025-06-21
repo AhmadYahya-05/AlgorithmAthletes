@@ -7,7 +7,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // WARNING: It is not recommended to store API keys in client-side code.
 // This should be handled by a backend server in a production environment.
-const API_KEY = 'AIzaSyAGmWwzjFAf4_OKorgRgPnpE6AVXeqt2Jw';
+const API_KEY = 'REPLACE WITH API KEY';
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest"});
 
