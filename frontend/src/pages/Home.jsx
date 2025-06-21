@@ -406,7 +406,7 @@ const Home = ({ user, onLogout }) => {
   return (
     <div className="min-h-screen relative" style={{ imageRendering: 'pixelated' }}>
       <ParallaxBackground />
-      <NavigationBar />
+      <NavigationBar user={user} onLogout={onLogout} />
       
       <main className="relative z-10">
         <HeroSection />

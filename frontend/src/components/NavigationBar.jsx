@@ -62,7 +62,7 @@ const NavigationBar = ({ user, onLogout }) => {
                 >
                   <ul className="py-1">
                     <li className="px-4 py-2 text-sm text-gray-400">
-                      Welcome, {user?.firstName}!
+                      Welcome, {user?.firstName || user?.username || 'Hero'}!
                     </li>
                     <li className="border-t border-gray-700"></li>
                     <li>
@@ -73,7 +73,10 @@ const NavigationBar = ({ user, onLogout }) => {
                     </li>
                     <li>
                       <button
-                        onClick={onLogout}
+                        onClick={() => {
+                          onLogout();
+                          setIsProfileMenuOpen(false);
+                        }}
                         className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700"
                       >
                         <LogOut className="h-4 w-4 mr-2" />
