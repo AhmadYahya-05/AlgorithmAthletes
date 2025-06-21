@@ -1,7 +1,8 @@
-import { LogOut } from 'lucide-react';
+import { LogOut, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-const Header = ({ user, onLogout, title = "FITNESS QUEST" }) => {
+const Header = ({ user, onLogout, title = "FITNESS QUEST", onNavigateBack }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -19,11 +20,23 @@ const Header = ({ user, onLogout, title = "FITNESS QUEST" }) => {
     }}>
       <div className="w-full px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center cursor-pointer" onClick={goHome}>
-            <div className="text-3xl mr-3 animate-pulse">⚔️</div>
-            <h1 className="text-2xl font-bold text-yellow-300 tracking-wider hover:text-yellow-200 transition-colors" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
-              {title}
-            </h1>
+          <div className="flex items-center space-x-4">
+            {onNavigateBack && (
+              <motion.button
+                onClick={onNavigateBack}
+                whileHover={{ scale: 1.1, rotate: -5 }}
+                className="flex items-center space-x-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg border-2 border-blue-800 font-bold text-xs"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>BACK</span>
+              </motion.button>
+            )}
+            <div className="flex items-center cursor-pointer" onClick={goHome}>
+              <div className="text-3xl mr-3 animate-pulse">⚔️</div>
+              <h1 className="text-2xl font-bold text-yellow-300 tracking-wider hover:text-yellow-200 transition-colors" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+                {title}
+              </h1>
+            </div>
           </div>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 bg-black bg-opacity-30 px-3 py-1 rounded-lg border border-yellow-400">
