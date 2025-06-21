@@ -30,12 +30,31 @@ export const UserProvider = ({ children }) => {
     }
   });
 
+  const [activeCharacter, setActiveCharacter] = useState('Iron Fist');
+  const [characterStats, setCharacterStats] = useState({
+    health: 10,
+    armStrength: 10,
+    legStrength: 10,
+    stamina: 10,
+  });
+
   const updateUserStats = (newStats) => {
     setUserStats(prev => ({ ...prev, ...newStats }));
   };
 
+  const updateCharacterStats = (newStats) => {
+    setCharacterStats(prev => ({ ...prev, ...newStats }));
+  };
+
   return (
-    <UserContext.Provider value={{ userStats, updateUserStats }}>
+    <UserContext.Provider value={{ 
+      userStats, 
+      updateUserStats,
+      activeCharacter,
+      setActiveCharacter,
+      characterStats,
+      updateCharacterStats
+    }}>
       {children}
     </UserContext.Provider>
   );
