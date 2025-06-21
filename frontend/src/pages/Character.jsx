@@ -14,7 +14,7 @@ const Character = ({ user, onLogout, onNavigateBack }) => {
       description: "A powerful warrior with unmatched arm strength",
       stats: {
         health: 10,
-        armStrength: 35, // Example value to test sprite change
+        armStrength: 0, // Example value to test sprite change
         legStrength: 10,
         stamina: 10
       },
