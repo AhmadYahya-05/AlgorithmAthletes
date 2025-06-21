@@ -48,7 +48,7 @@ const Home = ({ user, onLogout }) => {
   );
 
   const LogoSVG = () => (
-    <svg viewBox="0 0 800 200" className="w-full max-w-2xl mx-auto">
+    <svg viewBox="0 0 800 150" className="w-full max-w-3xl mx-auto">
       <defs>
         <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="4" dy="4" stdDeviation="0" floodColor="#d97706" />
@@ -153,10 +153,12 @@ const Home = ({ user, onLogout }) => {
           transition={{ delay: 0.5, duration: 0.8 }}
           className="mb-8"
         >
-          <p className="text-lg md:text-xl text-green-100 mb-6 leading-relaxed">
-            Welcome to your personal fitness adventure! Level up your health, complete quests, 
-            and become the hero of your own story.
-          </p>
+          <div className="bg-gray-900 bg-opacity-70 rounded-xl border-2 border-yellow-400 p-6 max-w-2xl mx-auto shadow-lg mb-12" style={{ backdropFilter: 'blur(5px)'}}>
+            <p className="text-lg md:text-xl text-yellow-100 leading-relaxed" style={{ fontFamily: 'monospace' }}>
+              Welcome to your personal fitness adventure! Level up your health, complete quests, 
+              and become the hero of your own story.
+            </p>
+          </div>
           
           <motion.button
             whileHover={{ 
