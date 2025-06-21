@@ -3,8 +3,12 @@ import { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+<<<<<<< HEAD
 import ExerciseForm from './pages/ExerciseForm';
 import MediaPipeExerciseForm from './pages/MediaPipeExerciseForm';
+=======
+import { API_ENDPOINTS } from './config/api.js';
+>>>>>>> 4b5095b0d6e9002963e65db47f0b2c7ddb0f1e48
 import './App.css';
 
 function App() {
@@ -25,7 +29,7 @@ function App() {
 
   const fetchUser = async (token) => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/me', {
+      const response = await fetch(API_ENDPOINTS.AUTH.ME, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

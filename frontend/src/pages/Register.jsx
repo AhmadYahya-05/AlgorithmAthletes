@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User, UserCheck } from 'lucide-react';
+import { API_ENDPOINTS } from '../config/api.js';
 
 const Register = ({ onRegister }) => {
   const [formData, setFormData] = useState({
@@ -55,7 +56,7 @@ const Register = ({ onRegister }) => {
     try {
       const { confirmPassword, ...registrationData } = formData;
       
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(API_ENDPOINTS.AUTH.REGISTER, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
