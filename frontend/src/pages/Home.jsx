@@ -5,9 +5,12 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { LogOut, User, Trophy, Target, BarChart3, Sword, Shield, Heart, Download, Users, Star, Play } from 'lucide-react';
 import { UserContext } from '../App';
 import CharacterCard from '../components/CharacterCard';
+import { getCharacterSprite } from '../data/characters';
+import { useNavigate } from 'react-router-dom';
 
 const Home = ({ user, onLogout }) => {
-  const { userStats } = useContext(UserContext);
+  const { userStats, characterStats, activeCharacter } = useContext(UserContext);
+  const navigate = useNavigate();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   
@@ -70,7 +73,7 @@ const Home = ({ user, onLogout }) => {
         <motion.div className="absolute bottom-6 right-1/4 text-yellow-300 text-lg animate-pulse" style={{animationDelay: '1s'}}>✨</motion.div>
         <motion.div className="absolute bottom-2 left-3/4 text-yellow-300 text-lg animate-pulse" style={{animationDelay: '0.5s'}}>✨</motion.div>
       </motion.div>
-    </div>
+      </div>
   );
 
   // Pixel Art Logo Component
@@ -90,7 +93,7 @@ const Home = ({ user, onLogout }) => {
       <h1 
         className="text-6xl md:text-8xl font-bold text-yellow-300 mb-4"
         style={{ 
-          fontFamily: 'monospace',
+        fontFamily: 'monospace',
           textShadow: '4px 4px 0px #d97706, 8px 8px 0px rgba(0,0,0,0.3)',
           imageRendering: 'pixelated',
           letterSpacing: '0.1em'
@@ -105,7 +108,7 @@ const Home = ({ user, onLogout }) => {
       >
         ⚔️
       </motion.div>
-      <p className="text-xl text-cyan-200 font-bold" style={{ fontFamily: 'monospace' }}>
+      <p className="text-xl text-green-100 font-bold" style={{ fontFamily: 'monospace' }}>
         Begin Your Epic Fitness Journey
       </p>
     </motion.div>
@@ -119,16 +122,16 @@ const Home = ({ user, onLogout }) => {
       className="fixed top-0 w-full z-50 bg-gray-900 bg-opacity-80 border-b border-gray-700 shadow-lg"
       style={{ backdropFilter: 'blur(10px)' }}
     >
-      <div className="w-full px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="w-full px-8">
+          <div className="flex justify-between items-center h-16">
           <motion.div 
             whileHover={{ scale: 1.05, rotate: 5 }}
             className="flex items-center cursor-pointer"
           >
             <div className="text-2xl mr-3 animate-pulse">⚔️</div>
             <span className="text-xl font-bold text-cyan-300" style={{ fontFamily: 'monospace' }}>
-              FITNESS QUEST
-            </span>
+                FITNESS QUEST
+                </span>
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -186,7 +189,7 @@ const Home = ({ user, onLogout }) => {
                       >
                         <LogOut className="h-4 w-4 mr-2" />
                         <span>Quit</span>
-                      </button>
+              </button>
                     </li>
                   </ul>
                 </motion.div>
@@ -232,7 +235,7 @@ const Home = ({ user, onLogout }) => {
           transition={{ delay: 0.5, duration: 0.8 }}
           className="mb-8"
         >
-          <p className="text-lg md:text-xl text-gray-300 mb-6 leading-relaxed">
+          <p className="text-lg md:text-xl text-green-100 mb-6 leading-relaxed">
             Welcome to your personal fitness adventure! Level up your health, complete quests, 
             and become the hero of your own story.
           </p>
@@ -259,18 +262,20 @@ const Home = ({ user, onLogout }) => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.8, duration: 0.6 }}
-          className="inline-block bg-gradient-to-b from-purple-600 to-indigo-700 rounded-2xl p-6 border-4 border-white shadow-2xl mb-12"
+          whileHover={{ scale: 1.05, y: -5 }}
+          onClick={() => navigate('/character')}
+          className="inline-block bg-gradient-to-b from-blue-400 to-blue-600 rounded-2xl p-6 border-4 border-white shadow-2xl mb-12 cursor-pointer"
           style={{
             boxShadow: '0 8px 16px rgba(0,0,0,0.4), inset 0 2px 8px rgba(255,255,255,0.3)'
           }}
         >
-          <div className="mb-4">
-            <div className="bg-black bg-opacity-70 px-4 py-2 rounded-lg border-2 border-yellow-400 inline-block">
+            <div className="mb-4">
+              <div className="bg-black bg-opacity-70 px-4 py-2 rounded-lg border-2 border-yellow-400 inline-block">
               <span className="text-yellow-300 font-bold text-lg" style={{ fontFamily: 'monospace' }}>
-                @{user?.username || `${user?.firstName?.toLowerCase()}`}
-              </span>
+                  @{user?.username || `${user?.firstName?.toLowerCase()}`}
+                </span>
+              </div>
             </div>
-          </div>
 
           <motion.div 
             animate={{ 
@@ -282,21 +287,26 @@ const Home = ({ user, onLogout }) => {
               repeat: Infinity, 
               ease: "easeInOut" 
             }}
-            className="text-9xl mb-4"
-            style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.5))' }}
-          >
-            {userStats.level >= 10 ? '🧙‍♂️' : userStats.level >= 5 ? '⚔️' : '🏃‍♂️'}
+            className="text-9xl mb-4 h-32 flex justify-center items-center"
+                style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.5))' }}
+              >
+            <img 
+              src={getCharacterSprite(activeCharacter, characterStats)} 
+              alt="Selected Character" 
+              className="max-h-full"
+              style={{ imageRendering: 'pixelated' }}
+            />
           </motion.div>
 
-          <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-full w-12 h-12 flex items-center justify-center border-3 border-yellow-400 font-bold text-lg shadow-lg">
-            {userStats.level}
-          </div>
-
-          <div className="mt-4">
-            <div className="text-xs font-bold text-white mb-1" style={{ fontFamily: 'monospace' }}>
-              XP: {userStats.xp} / {userStats.xpToNext}
+              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-full w-12 h-12 flex items-center justify-center border-3 border-yellow-400 font-bold text-lg shadow-lg">
+                {userStats.level}
             </div>
-            <div className="w-48 h-4 bg-gray-800 rounded-full border-2 border-gray-600 mx-auto overflow-hidden">
+
+            <div className="mt-4">
+              <div className="text-xs font-bold text-white mb-1" style={{ fontFamily: 'monospace' }}>
+                XP: {userStats.xp} / {userStats.xpToNext}
+              </div>
+              <div className="w-48 h-4 bg-gray-800 rounded-full border-2 border-gray-600 mx-auto overflow-hidden">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: `${(userStats.xp / userStats.xpToNext) * 100}%` }}
@@ -306,7 +316,7 @@ const Home = ({ user, onLogout }) => {
             </div>
           </div>
         </motion.div>
-      </div>
+        </div>
 
       {/* Floating animated characters */}
       <AnimatedCharacter emoji="🏃‍♀️" delay={0} position="top-1/4 left-10" />
@@ -371,14 +381,14 @@ const Home = ({ user, onLogout }) => {
               viewport={{ once: true }}
               className={`bg-gradient-to-b ${stat.color} rounded-xl p-6 border-4 ${stat.border} shadow-2xl`}
             >
-              <div className="flex items-center justify-between">
-                <div>
+            <div className="flex items-center justify-between">
+              <div>
                   <div className="flex items-center mb-2 text-white">
                     {stat.icon}
                     <span className="font-bold ml-2" style={{ fontFamily: 'monospace' }}>
                       {stat.label}
                     </span>
-                  </div>
+                </div>
                   <div className="text-3xl font-bold text-white">{stat.value}</div>
                 </div>
                 <motion.div 
@@ -484,7 +494,7 @@ const Home = ({ user, onLogout }) => {
         <HeroSection />
         <StatsPanel />
         <QuestBoard />
-        
+
         {/* Achievement Banner */}
         <motion.section 
           initial={{ opacity: 0, scale: 0.9 }}
@@ -498,7 +508,7 @@ const Home = ({ user, onLogout }) => {
               whileHover={{ scale: 1.05, y: -5 }}
               className="inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 px-8 py-6 rounded-2xl border-4 border-yellow-700 shadow-2xl"
             >
-              <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
                 <motion.div 
                   animate={{ rotate: 360 }}
                   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -506,10 +516,10 @@ const Home = ({ user, onLogout }) => {
                 >
                   🌟
                 </motion.div>
-                <div>
+              <div>
                   <h4 className="font-bold text-yellow-900 text-xl mb-1" style={{ fontFamily: 'monospace' }}>
-                    Next Achievement: Week Warrior
-                  </h4>
+                  Next Achievement: Week Warrior
+                </h4>
                   <p className="text-yellow-800">Complete 7 days in a row (7/7)</p>
                 </div>
                 <motion.div 
