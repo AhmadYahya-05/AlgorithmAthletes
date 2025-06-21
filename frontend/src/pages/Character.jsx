@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { UserContext } from '../App';
+import { UserContext } from '../context/UserContext';
 import { ArrowLeft, Heart, Zap, Shield, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { characters, getCharacterSprite } from '../data/characters';

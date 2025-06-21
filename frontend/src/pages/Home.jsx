@@ -3,8 +3,9 @@
 import { useState, useEffect, useContext } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { LogOut, User, Trophy, Target, BarChart3, Sword, Shield, Heart, Download, Users, Star, Play } from 'lucide-react';
-import { UserContext } from '../App';
+import { UserContext } from '../context/UserContext';
 import CharacterCard from '../components/CharacterCard';
+import NavigationBar from '../components/NavigationBar';
 import { getCharacterSprite } from '../data/characters';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,12 +47,60 @@ const Home = ({ user, onLogout }) => {
     </div>
   );
 
+  const LogoSVG = () => (
+    <svg viewBox="0 0 800 200" className="w-full max-w-2xl mx-auto">
+      <defs>
+        <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="4" dy="4" stdDeviation="0" floodColor="#d97706" />
+          <feDropShadow dx="8" dy="8" stdDeviation="0" floodColor="rgba(0,0,0,0.3)" />
+        </filter>
+        <style>
+          {`@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');`}
+        </style>
+      </defs>
+      
+      {/* Decorative Vines */}
+      <motion.path
+        d="M 20,90 Q 50,40 100,60 T 180,70"
+        fill="none"
+        stroke="#10B981"
+        strokeWidth="5"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M 780,90 Q 750,40 700,60 T 620,70"
+        fill="none"
+        stroke="#10B981"
+        strokeWidth="5"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
+      />
+
+      <text
+        x="50%"
+        y="50%"
+        dy=".3em"
+        textAnchor="middle"
+        fontSize="80"
+        fontFamily="VT323, monospace"
+        fill="#fcd34d" // yellow-300
+        style={{ filter: 'url(#text-shadow)' }}
+      >
+        FITNESS QUEST
+      </text>
+    </svg>
+  );
+
   // Pixel Art Logo Component
   const PixelArtLogo = () => (
     <motion.div 
       animate={{ 
         scale: [1, 1.02, 1],
-        rotateY: [0, 2, 0, -2, 0]
       }}
       transition={{ 
         duration: 4, 
@@ -60,16 +109,7 @@ const Home = ({ user, onLogout }) => {
       }}
       className="text-center mb-8"
     >
-      <h1 
-        className="text-6xl md:text-8xl font-bold text-yellow-300 mb-4"
-        style={{ 
-          fontFamily: 'monospace',
-          textShadow: '4px 4px 0px #d97706, 8px 8px 0px rgba(0,0,0,0.3)',
-          imageRendering: 'pixelated',
-        }}
-      >
-        FITNESS QUEST
-      </h1>
+      <LogoSVG />
       <motion.div 
         animate={{ rotate: [0, 5, -5, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -77,116 +117,25 @@ const Home = ({ user, onLogout }) => {
       >
         ⚔️
       </motion.div>
-      <p className="text-xl text-green-100 font-bold" style={{ fontFamily: 'monospace' }}>
+      <p className="text-xl text-cyan-200 font-bold" style={{ fontFamily: 'monospace' }}>
         Begin Your Epic Fitness Journey
       </p>
     </motion.div>
   );
 
-  // Navigation Bar Component
-  const NavigationBar = () => (
-    <motion.nav 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className="fixed top-0 w-full z-50 bg-gray-900 bg-opacity-80 border-b border-gray-700 shadow-lg"
-      style={{ backdropFilter: 'blur(10px)' }}
-    >
-        <div className="w-full px-8">
-          <div className="flex justify-between items-center h-16">
-          <motion.div 
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            className="flex items-center cursor-pointer"
-          >
-            <div className="text-2xl mr-3 animate-pulse">⚔️</div>
-            <span className="text-xl font-bold text-yellow-300" style={{ fontFamily: 'monospace' }}>
-                FITNESS QUEST
-                </span>
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {['About', 'Features', 'Community'].map((item) => (
-              <motion.button
-                key={item}
-                whileHover={{ scale: 1.1, y: -2, color: '#fcd34d' }} // yellow-300
-                whileTap={{ scale: 0.95 }}
-                className="text-gray-300 font-semibold transition-colors"
-                style={{ fontFamily: 'monospace' }}
-              >
-                {item}
-              </motion.button>
-            ))}
-          </div>
-
-          {/* Profile Dropdown */}
-          <div className="relative">
-            <motion.button
-              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center space-x-2 bg-black bg-opacity-30 px-3 py-2 rounded-lg border border-yellow-400"
-            >
-              <div className="text-yellow-300">👤</div>
-              <span className="text-yellow-100 font-bold text-sm">
-                {user?.firstName}
-              </span>
-            </motion.button>
-            
-            <AnimatePresence>
-              {isProfileMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden"
-                >
-                  <ul className="py-1">
-                    <li className="px-4 py-2 text-sm text-gray-400">
-                      Welcome, {user?.firstName}!
-                    </li>
-                    <li className="border-t border-gray-700"></li>
-                    <li>
-                      <a href="#" className="flex items-center w-full px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-yellow-300">
-                        <BarChart3 className="h-4 w-4 mr-2" />
-                        My Stats
-                      </a>
-                    </li>
-                    <li>
-                      <button
-                        onClick={onLogout}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700"
-                      >
-                        <LogOut className="h-4 w-4 mr-2" />
-                        <span>Quit</span>
-              </button>
-                    </li>
-                  </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
-    </motion.nav>
-  );
-
-  // Animated Character Component
-  const AnimatedCharacter = ({ emoji, delay = 0, position }) => (
-    <motion.div 
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ 
-        opacity: 1, 
-        y: [0, -10, 0],
-        rotate: [0, 2, -2, 0]
-      }}
+  // Floating Character Component
+  const AnimatedCharacter = ({ emoji, delay, position }) => (
+    <motion.div
+      className={`absolute text-4xl ${position}`}
+      style={{ filter: 'drop-shadow(0 0 8px rgba(0,0,0,0.5))' }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: [0, 0.7, 0], y: [20, -20, 20] }}
       transition={{ 
-        duration: 3, 
+        duration: Math.random() * 5 + 5, 
         repeat: Infinity, 
-        ease: "easeInOut",
-        delay: delay 
+        delay,
+        ease: "easeInOut"
       }}
-      className={`absolute text-6xl ${position}`}
-      style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.3))' }}
     >
       {emoji}
     </motion.div>
