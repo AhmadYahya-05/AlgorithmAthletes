@@ -2,8 +2,10 @@
 
 import { LogOut, User, Trophy, Target, BarChart3, Sword, Shield, Heart } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Home = ({ user, onLogout }) => {
+  const navigate = useNavigate();
   const [characterAnimation, setCharacterAnimation] = useState('idle');
   const [showLevelUp, setShowLevelUp] = useState(false);
 
@@ -235,6 +237,23 @@ const Home = ({ user, onLogout }) => {
                 <p className="text-cyan-100 text-sm">Get form feedback</p>
                 <div className="mt-3 bg-yellow-400 text-cyan-800 px-3 py-1 rounded-full text-xs font-bold">
                   +30 XP
+                </div>
+              </div>
+            </button>
+          </div>
+
+          {/* Character Selection Button */}
+          <div className="mt-8 text-center">
+            <button 
+              onClick={() => navigate('/character')}
+              className="bg-gradient-to-b from-pink-400 to-pink-600 p-6 rounded-xl border-4 border-pink-700 shadow-lg hover:scale-105 transform transition-all duration-200 group"
+            >
+              <div className="text-center">
+                <div className="text-4xl mb-3 group-hover:animate-bounce">🎮</div>
+                <h4 className="font-bold text-white text-lg mb-2" style={{ fontFamily: 'monospace' }}>CHARACTER SELECT</h4>
+                <p className="text-pink-100 text-sm">Choose your champion</p>
+                <div className="mt-3 bg-yellow-400 text-pink-800 px-3 py-1 rounded-full text-xs font-bold">
+                  PARTY SCREEN
                 </div>
               </div>
             </button>

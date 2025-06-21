@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import Character from './pages/Character';
 import { API_ENDPOINTS } from './config/api.js';
 import './App.css';
 
@@ -93,6 +94,14 @@ function App() {
             element={
               isAuthenticated ? 
                 <Home user={user} onLogout={logout} /> : 
+                <Navigate to="/login" replace />
+            } 
+          />
+          <Route 
+            path="/character" 
+            element={
+              isAuthenticated ? 
+                <Character user={user} onLogout={logout} onNavigateBack={() => window.history.back()} /> : 
                 <Navigate to="/login" replace />
             } 
           />
