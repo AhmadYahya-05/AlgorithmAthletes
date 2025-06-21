@@ -15,65 +15,35 @@ const Home = ({ user, onLogout }) => {
   const { scrollY } = useScroll();
   
   // Parallax transforms for different layers
-  const skyY = useTransform(scrollY, [0, 1000], [0, -100]);
-  const mountainsY = useTransform(scrollY, [0, 1000], [0, -200]);
-  const treesY = useTransform(scrollY, [0, 1000], [0, -300]);
-  const foregroundY = useTransform(scrollY, [0, 1000], [0, -400]);
+  const skyY = useTransform(scrollY, [0, 1000], [0, -50]);
 
   // Parallax Background Component
   const ParallaxBackground = () => (
-    <div className="fixed inset-0 z-0" style={{ imageRendering: 'pixelated' }}>
-      {/* Sky Layer - Night Theme */}
+    <div className="fixed inset-0 z-0 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
+      {/* Sky Layer */}
       <motion.div 
         style={{ y: skyY }}
-        className="absolute inset-0 bg-gradient-to-b from-gray-900 via-indigo-800 to-blue-900"
+        className="absolute inset-0 bg-gradient-to-b from-[#2D1B69] to-[#1E3A8A]"
       >
-        {/* Animated stars */}
-        <motion.div className="absolute top-10 left-1/4 text-xl opacity-80 text-yellow-200 animate-pulse">✨</motion.div>
-        <motion.div className="absolute top-20 right-1/3 text-lg opacity-70 text-yellow-200 animate-pulse" style={{animationDelay: '1s'}}>✨</motion.div>
-        <motion.div className="absolute top-32 left-1/2 text-sm opacity-90 text-yellow-200 animate-pulse" style={{animationDelay: '2s'}}>✨</motion.div>
-        <motion.div className="absolute top-40 right-1/4 text-md opacity-80 text-yellow-200 animate-pulse" style={{animationDelay: '0.5s'}}>✨</motion.div>
-        <motion.div className="absolute top-16 left-1/3 text-lg opacity-70 text-yellow-200 animate-pulse" style={{animationDelay: '1.5s'}}>✨</motion.div>
-        
+        {/* Stars */}
+        {[...Array(50)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute bg-white rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 80}%`, // Spread stars out more vertically
+              width: `${Math.random() * 2 + 1}px`,
+              height: `${Math.random() * 2 + 1}px`,
+            }}
+            animate={{ opacity: [0.2, 1, 0.2] }}
+            transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        ))}
         {/* Moon */}
-        <motion.div 
-          animate={{ y: [-5, 5, -5] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-12 right-16 text-6xl"
-        >
-          🌙
-        </motion.div>
+        <div className="absolute top-12 right-16 text-6xl opacity-90">🌙</div>
       </motion.div>
-
-      {/* Mountains Layer - Night Theme */}
-      <motion.div style={{ y: mountainsY }} className="absolute bottom-0 w-full h-64">
-        <div className="absolute bottom-0 w-full h-full bg-gradient-to-t from-gray-800 to-indigo-900 opacity-90" 
-             style={{ 
-               clipPath: 'polygon(0 100%, 0 60%, 10% 50%, 20% 65%, 30% 45%, 40% 55%, 50% 40%, 60% 50%, 70% 35%, 80% 45%, 90% 30%, 100% 40%, 100% 100%)'
-             }} />
-        <div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-gray-900 to-gray-800 opacity-80" 
-             style={{ 
-               clipPath: 'polygon(0 100%, 0 70%, 15% 55%, 25% 70%, 35% 50%, 45% 60%, 55% 45%, 65% 55%, 75% 40%, 85% 50%, 95% 35%, 100% 45%, 100% 100%)'
-             }} />
-      </motion.div>
-
-      {/* Trees Layer - Darker Silhouettes */}
-      <motion.div style={{ y: treesY, filter: 'brightness(0.5)' }} className="absolute bottom-0 w-full">
-        <div className="absolute bottom-16 left-10 text-8xl">🌲</div>
-        <div className="absolute bottom-20 left-32 text-7xl">🌳</div>
-        <div className="absolute bottom-12 right-20 text-9xl">🌲</div>
-        <div className="absolute bottom-24 right-40 text-6xl">🌳</div>
-        <div className="absolute bottom-8 left-1/2 text-7xl">🌲</div>
-        <div className="absolute bottom-16 left-1/3 text-8xl">🌳</div>
-      </motion.div>
-
-      {/* Foreground Elements - Fireflies */}
-      <motion.div style={{ y: foregroundY }} className="absolute bottom-0 w-full">
-        <motion.div className="absolute bottom-8 left-1/4 text-yellow-300 text-lg animate-pulse">✨</motion.div>
-        <motion.div className="absolute bottom-6 right-1/4 text-yellow-300 text-lg animate-pulse" style={{animationDelay: '1s'}}>✨</motion.div>
-        <motion.div className="absolute bottom-2 left-3/4 text-yellow-300 text-lg animate-pulse" style={{animationDelay: '0.5s'}}>✨</motion.div>
-      </motion.div>
-      </div>
+    </div>
   );
 
   // Pixel Art Logo Component
@@ -93,10 +63,9 @@ const Home = ({ user, onLogout }) => {
       <h1 
         className="text-6xl md:text-8xl font-bold text-yellow-300 mb-4"
         style={{ 
-        fontFamily: 'monospace',
+          fontFamily: 'monospace',
           textShadow: '4px 4px 0px #d97706, 8px 8px 0px rgba(0,0,0,0.3)',
           imageRendering: 'pixelated',
-          letterSpacing: '0.1em'
         }}
       >
         FITNESS QUEST
@@ -129,7 +98,7 @@ const Home = ({ user, onLogout }) => {
             className="flex items-center cursor-pointer"
           >
             <div className="text-2xl mr-3 animate-pulse">⚔️</div>
-            <span className="text-xl font-bold text-cyan-300" style={{ fontFamily: 'monospace' }}>
+            <span className="text-xl font-bold text-yellow-300" style={{ fontFamily: 'monospace' }}>
                 FITNESS QUEST
                 </span>
           </motion.div>
@@ -139,7 +108,7 @@ const Home = ({ user, onLogout }) => {
             {['About', 'Features', 'Community'].map((item) => (
               <motion.button
                 key={item}
-                whileHover={{ scale: 1.1, y: -2, color: '#67e8f9' }} // cyan-300
+                whileHover={{ scale: 1.1, y: -2, color: '#fcd34d' }} // yellow-300
                 whileTap={{ scale: 0.95 }}
                 className="text-gray-300 font-semibold transition-colors"
                 style={{ fontFamily: 'monospace' }}
@@ -154,10 +123,10 @@ const Home = ({ user, onLogout }) => {
             <motion.button
               onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
               whileHover={{ scale: 1.05 }}
-              className="flex items-center space-x-2 bg-black bg-opacity-30 px-3 py-2 rounded-lg border border-cyan-400"
+              className="flex items-center space-x-2 bg-black bg-opacity-30 px-3 py-2 rounded-lg border border-yellow-400"
             >
-              <div className="text-cyan-300">👤</div>
-              <span className="text-cyan-100 font-bold text-sm">
+              <div className="text-yellow-300">👤</div>
+              <span className="text-yellow-100 font-bold text-sm">
                 {user?.firstName}
               </span>
             </motion.button>
@@ -177,7 +146,7 @@ const Home = ({ user, onLogout }) => {
                     </li>
                     <li className="border-t border-gray-700"></li>
                     <li>
-                      <a href="#" className="flex items-center w-full px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">
+                      <a href="#" className="flex items-center w-full px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-yellow-300">
                         <BarChart3 className="h-4 w-4 mr-2" />
                         My Stats
                       </a>
@@ -262,12 +231,12 @@ const Home = ({ user, onLogout }) => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.8, duration: 0.6 }}
-          whileHover={{ scale: 1.05, y: -5 }}
-          onClick={() => navigate('/character')}
-          className="inline-block bg-gradient-to-b from-blue-400 to-blue-600 rounded-2xl p-6 border-4 border-white shadow-2xl mb-12 cursor-pointer"
+          className="relative inline-block bg-gradient-to-b from-purple-600 to-indigo-700 rounded-2xl p-6 border-4 border-white shadow-2xl mb-12"
           style={{
             boxShadow: '0 8px 16px rgba(0,0,0,0.4), inset 0 2px 8px rgba(255,255,255,0.3)'
           }}
+          whileHover={{ scale: 1.05, y: -5 }}
+          onClick={() => navigate('/character')}
         >
             <div className="mb-4">
               <div className="bg-black bg-opacity-70 px-4 py-2 rounded-lg border-2 border-yellow-400 inline-block">
@@ -423,16 +392,16 @@ const Home = ({ user, onLogout }) => {
       className="relative z-10 px-8 py-16"
     >
       <div className="max-w-6xl mx-auto">
-        <div className="bg-gradient-to-b from-amber-100 to-amber-200 rounded-2xl border-4 border-amber-600 shadow-2xl p-8">
+        <div className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-8" style={{ backdropFilter: 'blur(10px)' }}>
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-8"
           >
-            <h3 className="text-3xl font-bold text-amber-900 mb-2" style={{ fontFamily: 'monospace' }}>
+            <h3 className="text-3xl font-bold text-yellow-300 mb-2" style={{ fontFamily: 'monospace' }}>
               🗞️ QUEST BOARD 🗞️
             </h3>
-            <p className="text-amber-800 text-lg">Choose your next adventure!</p>
+            <p className="text-gray-300 text-lg">Choose your next adventure!</p>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -534,34 +503,6 @@ const Home = ({ user, onLogout }) => {
           </div>
         </motion.section>
       </main>
-
-      {/* Floating Particles */}
-      <div className="fixed inset-0 pointer-events-none z-5">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ 
-              x: Math.random() * window.innerWidth,
-              y: window.innerHeight + 50,
-              opacity: 0
-            }}
-            animate={{
-              y: -50,
-              opacity: [0, 1, 0],
-              x: Math.random() * window.innerWidth
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              delay: Math.random() * 5,
-              ease: "easeInOut"
-            }}
-            className="absolute text-2xl"
-          >
-            {['✨', '💫', '🌟', '✨', '💫', '🌟'][i]}
-          </motion.div>
-        ))}
-      </div>
     </div>
   );
 };
