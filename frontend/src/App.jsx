@@ -156,6 +156,14 @@ function App() {
                   <Navigate to="/login" replace />
               } 
             />
+            <Route 
+              path="/character" 
+              element={
+                isAuthenticated ? 
+                  <Character user={user} onLogout={logout} onNavigateBack={() => window.history.back()} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
