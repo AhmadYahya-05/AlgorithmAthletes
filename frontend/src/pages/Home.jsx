@@ -1,11 +1,13 @@
 // This will be the home page users are directed to after logging in / creating an account 
 
 import { LogOut, User, Trophy, Target, BarChart3, Sword, Shield, Heart } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../App';
+import CharacterCard from '../components/CharacterCard';
 import { useNavigate } from 'react-router-dom';
 
 const Home = ({ user, onLogout }) => {
-  const navigate = useNavigate();
+  const { userStats } = useContext(UserContext);
   const [characterAnimation, setCharacterAnimation] = useState('idle');
   const [showLevelUp, setShowLevelUp] = useState(false);
 
@@ -21,16 +23,6 @@ const Home = ({ user, onLogout }) => {
 
   const handleLogout = () => {
     onLogout();
-  };
-
-  // Mock user stats for demonstration
-  const userStats = {
-    level: 5,
-    xp: 1250,
-    xpToNext: 1500,
-    streak: 7,
-    workoutsCompleted: 23,
-    totalMinutes: 420
   };
 
   const getCharacterSprite = () => {
@@ -205,58 +197,41 @@ const Home = ({ user, onLogout }) => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-            {/* Daily Quest */}
-            <button className="bg-gradient-to-b from-green-400 to-green-600 p-6 rounded-xl border-4 border-green-700 shadow-lg hover:scale-105 transform transition-all duration-200 group">
-              <div className="text-center">
-                <div className="text-4xl mb-3 group-hover:animate-bounce">🏃‍♂️</div>
-                <h4 className="font-bold text-white text-lg mb-2" style={{ fontFamily: 'monospace' }}>DAILY QUEST</h4>
-                <p className="text-green-100 text-sm">Complete today's workout</p>
-                <div className="mt-3 bg-yellow-400 text-green-800 px-3 py-1 rounded-full text-xs font-bold">
-                  +50 XP
-                </div>
-              </div>
-            </button>
+            {/* Nutritionist Character */}
+            <CharacterCard 
+              name="NUTRITIONIST"
+              emoji="🥗"
+              description="Get personalized meal plans"
+              xpReward="+25 XP"
+              route="/nutritionist"
+              bgColor="from-green-400 to-green-600"
+              borderColor="border-green-700"
+              textColor="text-green-100"
+            />
 
-            {/* Weekly Challenge */}
-            <button className="bg-gradient-to-b from-purple-400 to-purple-600 p-6 rounded-xl border-4 border-purple-700 shadow-lg hover:scale-105 transform transition-all duration-200 group">
-              <div className="text-center">
-                <div className="text-4xl mb-3 group-hover:animate-bounce">🏆</div>
-                <h4 className="font-bold text-white text-lg mb-2" style={{ fontFamily: 'monospace' }}>WEEKLY BOSS</h4>
-                <p className="text-purple-100 text-sm">Beat the weekly challenge</p>
-                <div className="mt-3 bg-yellow-400 text-purple-800 px-3 py-1 rounded-full text-xs font-bold">
-                  +200 XP
-                </div>
-              </div>
-            </button>
+            {/* Personal Trainer Character */}
+            <CharacterCard 
+              name="PERSONAL TRAINER"
+              emoji="💪"
+              description="Custom workout plans & form feedback"
+              xpReward="+50 XP"
+              route="/trainer"
+              bgColor="from-orange-400 to-orange-600"
+              borderColor="border-orange-700"
+              textColor="text-orange-100"
+            />
 
-            {/* AI Trainer */}
-            <button className="bg-gradient-to-b from-cyan-400 to-cyan-600 p-6 rounded-xl border-4 border-cyan-700 shadow-lg hover:scale-105 transform transition-all duration-200 group">
-              <div className="text-center">
-                <div className="text-4xl mb-3 group-hover:animate-bounce">🤖</div>
-                <h4 className="font-bold text-white text-lg mb-2" style={{ fontFamily: 'monospace' }}>AI TRAINER</h4>
-                <p className="text-cyan-100 text-sm">Get form feedback</p>
-                <div className="mt-3 bg-yellow-400 text-cyan-800 px-3 py-1 rounded-full text-xs font-bold">
-                  +30 XP
-                </div>
-              </div>
-            </button>
-          </div>
-
-          {/* Character Selection Button */}
-          <div className="mt-8 text-center">
-            <button 
-              onClick={() => navigate('/character')}
-              className="bg-gradient-to-b from-pink-400 to-pink-600 p-6 rounded-xl border-4 border-pink-700 shadow-lg hover:scale-105 transform transition-all duration-200 group"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-3 group-hover:animate-bounce">🎮</div>
-                <h4 className="font-bold text-white text-lg mb-2" style={{ fontFamily: 'monospace' }}>CHARACTER SELECT</h4>
-                <p className="text-pink-100 text-sm">Choose your champion</p>
-                <div className="mt-3 bg-yellow-400 text-pink-800 px-3 py-1 rounded-full text-xs font-bold">
-                  PARTY SCREEN
-                </div>
-              </div>
-            </button>
+            {/* AI Coach Character */}
+            <CharacterCard 
+              name="AI COACH"
+              emoji="🤖"
+              description="Smart recommendations & motivation"
+              xpReward="+30 XP"
+              route="/ai-coach"
+              bgColor="from-cyan-400 to-cyan-600"
+              borderColor="border-cyan-700"
+              textColor="text-cyan-100"
+            />
           </div>
         </div>
 

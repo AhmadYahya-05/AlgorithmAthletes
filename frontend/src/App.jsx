@@ -1,11 +1,45 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import NutritionistPage from './pages/NutritionistPage';
+import PersonalTrainerPage from './pages/PersonalTrainerPage';
+import AIChatbotPage from './pages/AIChatbotPage';
 import Character from './pages/Character';
 import { API_ENDPOINTS } from './config/api.js';
 import './App.css';
+
+// Create User Context
+export const UserContext = createContext();
+
+// User Context Provider Component
+export const UserProvider = ({ children }) => {
+  const [userStats, setUserStats] = useState({
+    level: 5,
+    xp: 1250,
+    xpToNext: 1500,
+    streak: 7,
+    workoutsCompleted: 23,
+    totalMinutes: 420,
+    goals: ['Lose weight', 'Build muscle', 'Improve endurance'],
+    preferences: {
+      workoutTypes: ['strength', 'cardio'],
+      experience: 'intermediate',
+      timeAvailable: 45
+    }
+  });
+
+  const updateUserStats = (newStats) => {
+    setUserStats(prev => ({ ...prev, ...newStats }));
+  };
+
+  return (
+    <UserContext.Provider value={{ userStats, updateUserStats }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -70,45 +104,63 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route 
-            path="/login" 
-            element={
-              isAuthenticated ? 
-                <Navigate to="/" replace /> : 
-                <Login onLogin={login} />
-            } 
-          />
-          <Route 
-            path="/register" 
-            element={
-              isAuthenticated ? 
-                <Navigate to="/" replace /> : 
-                <Register onRegister={login} />
-            } 
-          />
-          <Route 
-            path="/" 
-            element={
-              isAuthenticated ? 
-                <Home user={user} onLogout={logout} /> : 
-                <Navigate to="/login" replace />
-            } 
-          />
-          <Route 
-            path="/character" 
-            element={
-              isAuthenticated ? 
-                <Character user={user} onLogout={logout} onNavigateBack={() => window.history.back()} /> : 
-                <Navigate to="/login" replace />
-            } 
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    </Router>
+    <UserProvider>
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route 
+              path="/login" 
+              element={
+                isAuthenticated ? 
+                  <Navigate to="/" replace /> : 
+                  <Login onLogin={login} />
+              } 
+            />
+            <Route 
+              path="/register" 
+              element={
+                isAuthenticated ? 
+                  <Navigate to="/" replace /> : 
+                  <Register onRegister={login} />
+              } 
+            />
+            <Route 
+              path="/" 
+              element={
+                isAuthenticated ? 
+                  <Home user={user} onLogout={logout} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
+            <Route 
+              path="/nutritionist" 
+              element={
+                isAuthenticated ? 
+                  <NutritionistPage user={user} onLogout={logout} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
+            <Route 
+              path="/trainer" 
+              element={
+                isAuthenticated ? 
+                  <PersonalTrainerPage user={user} onLogout={logout} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
+            <Route 
+              path="/ai-coach" 
+              element={
+                isAuthenticated ? 
+                  <AIChatbotPage user={user} onLogout={logout} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </Router>
+    </UserProvider>
   );
 }
 
