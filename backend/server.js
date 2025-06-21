@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import authRoutes from './src/routes/auth.js';
 import userRoutes from './src/routes/user.js';
+import videoRoutes from './src/routes/video.js';
 
 // Get current directory for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -27,6 +28,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve uploaded videos
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // MongoDB Connection
 const connectDB = async () => {
   try {
@@ -47,6 +51,7 @@ const connectDB = async () => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/video', videoRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

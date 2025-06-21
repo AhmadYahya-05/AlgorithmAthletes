@@ -460,14 +460,25 @@ const Home = ({ user, onLogout }) => {
             />
 
             <CharacterCard 
+              name="AI FORM CHECKER"
+              emoji="📹"
+              description="Real-time form analysis with AI"
+              xpReward="+40 XP"
+              route="/ai-form-checker"
+              bgColor="from-purple-400 to-purple-600"
+              borderColor="border-purple-700"
+              textColor="text-purple-100"
+            />
+
+            <CharacterCard 
               name="PARTY SCREEN"
               emoji="🎮"
               description="View and manage your characters"
               xpReward="VIEW"
               route="/character"
-              bgColor="from-purple-400 to-purple-600"
-              borderColor="border-purple-700"
-              textColor="text-purple-100"
+              bgColor="from-indigo-400 to-indigo-600"
+              borderColor="border-indigo-700"
+              textColor="text-indigo-100"
             />
           </div>
         </div>
