@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../context/UserContext';
 import NavigationBar from '../components/NavigationBar';
 import { motion } from 'framer-motion';
@@ -13,8 +13,69 @@ const ProfilePage = ({ user, onLogout }) => {
     restingHeartRate: '',
     systolicBP: '',
     diastolicBP: '',
+    // Lifestyle
+    exerciseFrequency: '',
+    smokingStatus: 'never',
+    alcoholConsumption: '',
+    sleepHours: '',
+    stressLevel: 5,
+    // Fitness
+    cardioPerformance: '',
+    strengthLevel: 'intermediate',
+    flexibilityLevel: 'average',
   });
   const [status, setStatus] = useState({ loading: false, error: null, success: false });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setStatus({ loading: true, error: null, success: false });
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(API_ENDPOINTS.PROFILE.GET, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 404) {
+          // Profile doesn't exist yet, do nothing
+          setStatus({ loading: false, error: null, success: false });
+          return;
+        }
+        
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to fetch profile.');
+        }
+
+        // Pre-fill form with existing data
+        setFormData({
+          chronologicalAge: data.basicMetrics.chronologicalAge || '',
+          height: data.basicMetrics.height || '',
+          weight: data.basicMetrics.weight || '',
+          restingHeartRate: data.basicMetrics.restingHeartRate || '',
+          systolicBP: data.basicMetrics.bloodPressure?.systolic || '',
+          diastolicBP: data.basicMetrics.bloodPressure?.diastolic || '',
+          exerciseFrequency: data.lifestyle?.exerciseFrequency || '',
+          smokingStatus: data.lifestyle?.smokingStatus || 'never',
+          alcoholConsumption: data.lifestyle?.alcoholConsumption || '',
+          sleepHours: data.lifestyle?.sleepHours || '',
+          stressLevel: data.lifestyle?.stressLevel || 5,
+          cardioPerformance: data.fitness?.cardioPerformance || '',
+          strengthLevel: data.fitness?.strengthLevel || 'intermediate',
+          flexibilityLevel: data.fitness?.flexibilityLevel || 'average',
+        });
+        setStatus({ loading: false, error: null, success: false });
+
+      } catch (error) {
+        setStatus({ loading: false, error: error.message, success: false });
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -174,6 +235,137 @@ const ProfilePage = ({ user, onLogout }) => {
                         className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
                       />
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Lifestyle Section */}
+              <div className="mb-12">
+                <h3 className="text-xl font-bold text-yellow-300 mb-4 border-b-2 border-yellow-400 pb-2">
+                  2. Lifestyle
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Exercise Frequency */}
+                  <div>
+                    <label htmlFor="exerciseFrequency" className="block text-sm font-bold text-gray-300 mb-2">Exercise Frequency (days/week)</label>
+                    <input
+                      type="number"
+                      name="exerciseFrequency"
+                      id="exerciseFrequency"
+                      value={formData.exerciseFrequency}
+                      onChange={handleChange}
+                      className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+                    />
+                  </div>
+                  {/* Smoking Status */}
+                  <div>
+                    <label htmlFor="smokingStatus" className="block text-sm font-bold text-gray-300 mb-2">Smoking Status</label>
+                    <select
+                      name="smokingStatus"
+                      id="smokingStatus"
+                      value={formData.smokingStatus}
+                      onChange={handleChange}
+                      className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+                    >
+                      <option value="never">Never</option>
+                      <option value="former">Former</option>
+                      <option value="current">Current</option>
+                    </select>
+                  </div>
+                  {/* Alcohol Consumption */}
+                  <div>
+                    <label htmlFor="alcoholConsumption" className="block text-sm font-bold text-gray-300 mb-2">Alcohol Consumption (drinks/week)</label>
+                    <input
+                      type="number"
+                      name="alcoholConsumption"
+                      id="alcoholConsumption"
+                      value={formData.alcoholConsumption}
+                      onChange={handleChange}
+                      className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+                    />
+                  </div>
+                  {/* Sleep Hours */}
+                  <div>
+                    <label htmlFor="sleepHours" className="block text-sm font-bold text-gray-300 mb-2">Average Sleep (hours/night)</label>
+                    <input
+                      type="number"
+                      name="sleepHours"
+                      id="sleepHours"
+                      value={formData.sleepHours}
+                      onChange={handleChange}
+                      className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+                    />
+                  </div>
+                  {/* Stress Level */}
+                  <div className="md:col-span-2">
+                    <label htmlFor="stressLevel" className="block text-sm font-bold text-gray-300 mb-2">Stress Level (1-10)</label>
+                    <div className="flex items-center space-x-4">
+                      <span className="text-lg">1</span>
+                      <input
+                        type="range"
+                        min="1"
+                        max="10"
+                        name="stressLevel"
+                        id="stressLevel"
+                        value={formData.stressLevel}
+                        onChange={handleChange}
+                        className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <span className="text-lg">10</span>
+                      <span className="font-bold text-yellow-300 w-8 text-center">{formData.stressLevel}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fitness Section */}
+              <div className="mb-12">
+                <h3 className="text-xl font-bold text-yellow-300 mb-4 border-b-2 border-yellow-400 pb-2">
+                  3. Fitness & Performance
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Cardio Performance */}
+                  <div className="md:col-span-2">
+                    <label htmlFor="cardioPerformance" className="block text-sm font-bold text-gray-300 mb-2">Describe Your Typical Cardio (e.g., "I run 5k in 30 mins")</label>
+                    <input
+                      type="text"
+                      name="cardioPerformance"
+                      id="cardioPerformance"
+                      value={formData.cardioPerformance}
+                      onChange={handleChange}
+                      className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+                    />
+                  </div>
+                  {/* Strength Level */}
+                  <div>
+                    <label htmlFor="strengthLevel" className="block text-sm font-bold text-gray-300 mb-2">Strength Level</label>
+                    <select
+                      name="strengthLevel"
+                      id="strengthLevel"
+                      value={formData.strengthLevel}
+                      onChange={handleChange}
+                      className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+                    >
+                      <option value="beginner">Beginner</option>
+                      <option value="intermediate">Intermediate</option>
+                      <option value="advanced">Advanced</option>
+                    </select>
+                  </div>
+                  {/* Flexibility Level */}
+                  <div>
+                    <label htmlFor="flexibilityLevel" className="block text-sm font-bold text-gray-300 mb-2">Flexibility</label>
+                    <select
+                      name="flexibilityLevel"
+                      id="flexibilityLevel"
+                      value={formData.flexibilityLevel}
+                      onChange={handleChange}
+                      className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+                    >
+                      <option value="poor">Poor</option>
+                      <option value="average">Average</option>
+                      <option value="good">Good</option>
+                      <option value="excellent">Excellent</option>
+                    </select>
                   </div>
                 </div>
               </div>
