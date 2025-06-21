@@ -5,15 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { characters, getCharacterSprite } from '../data/characters';
 
 const StatBar = ({ value, maxValue = 40, color, icon, label }) => (
-  <div className="mb-4">
-    <div className="flex items-center justify-between mb-1 text-white">
+  <div className="mb-5">
+    <div className="flex items-center justify-between mb-2 text-white">
       <div className="flex items-center">
         {icon}
-        <span className="font-bold ml-2 text-sm" style={{ fontFamily: 'monospace' }}>{label}</span>
+        <span className="font-bold ml-3 text-base" style={{ fontFamily: 'monospace' }}>{label}</span>
       </div>
-      <span className="font-bold text-xs">{value} / {maxValue}</span>
+      <span className="font-bold text-sm">{value} / {maxValue}</span>
     </div>
-    <div className="w-full h-4 bg-gray-800 rounded-full border-2 border-gray-600 overflow-hidden">
+    <div className="w-full h-6 bg-gray-800 rounded-full border-2 border-gray-600 overflow-hidden">
       <motion.div
         className={`h-full ${color}`}
         initial={{ width: 0 }}
@@ -54,13 +54,13 @@ const Character = ({ onNavigateBack }) => {
 
       {/* Main Content */}
       <main className="relative z-10 p-4 md:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           
           {/* Character Selection Panel */}
           <motion.div 
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-1 bg-gray-900 bg-opacity-70 rounded-2xl p-6 border-4 border-gray-700"
+            className="lg:col-span-1 bg-gray-900 bg-opacity-70 rounded-2xl p-6 border-4 border-gray-700 h-fit"
           >
             <h2 className="text-xl font-bold text-center text-white mb-6" style={{ fontFamily: 'monospace' }}>SELECT A CLASS</h2>
             <div className="space-y-4">
@@ -94,7 +94,7 @@ const Character = ({ onNavigateBack }) => {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-2 bg-gray-900 bg-opacity-70 rounded-2xl p-6 border-4 border-gray-700"
+            className="lg:col-span-3 bg-gray-900 bg-opacity-70 rounded-2xl p-6 border-4 border-gray-700"
           >
             <AnimatePresence mode="wait">
               {selectedCharacter && (
@@ -104,7 +104,7 @@ const Character = ({ onNavigateBack }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-8"
                 >
                   {/* Sprite and Description */}
                   <div className="text-center">
@@ -122,19 +122,39 @@ const Character = ({ onNavigateBack }) => {
                     <p className="text-gray-300 text-sm px-4">{selectedCharacter.description}</p>
                   </div>
 
-                  {/* Stats */}
-                  <div>
-                    <h3 className="text-xl font-bold text-center text-white mb-4" style={{ fontFamily: 'monospace' }}>USER STATS</h3>
-                    <StatBar value={characterStats.health} color="bg-red-500" icon={<Heart className="h-4 w-4" />} label="HEALTH" />
-                    <StatBar value={characterStats.armStrength} color="bg-orange-500" icon={<Zap className="h-4 w-4" />} label="ARM STRENGTH" />
-                    <StatBar value={characterStats.legStrength} color="bg-green-500" icon={<Shield className="h-4 w-4" />} label="LEG STRENGTH" />
-                    <StatBar value={characterStats.stamina} color="bg-blue-500" icon={<Activity className="h-4 w-4" />} label="STAMINA" />
+                  {/* Stats & Training */}
+                  <div className="flex flex-col justify-top">
+                    <h3 className="text-5xl font-bold text-center text-white mb-4" style={{ fontFamily: 'monospace' }}>STATS</h3>
+                    <div className="space-y-4">
+                      <StatBar value={characterStats.health} color="bg-red-500" icon={<Heart className="h-5 w-5" />} label="HEALTH" />
+                      <StatBar value={characterStats.armStrength} color="bg-orange-500" icon={<Zap className="h-5 w-5" />} label="ARM STRENGTH" />
+                      <StatBar value={characterStats.legStrength} color="bg-green-500" icon={<Shield className="h-5 w-5" />} label="LEG STRENGTH" />
+                      <StatBar value={characterStats.backStrength} color="bg-cyan-500" icon={<Shield className="h-5 w-5" />} label="BACK STRENGTH" />
+                      <StatBar value={characterStats.stamina} color="bg-blue-500" icon={<Activity className="h-5 w-5" />} label="STAMINA" />
+                    </div>
+                    
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full mt-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 rounded-xl font-bold text-lg border-2 border-yellow-600 shadow-lg"
+                    >
+                      TRAIN
+                    </motion.button>
+
+                    {/* Achievements Display Case */}
+                    <div className="w-full mt-4 bg-blue-100 rounded-2xl p-3 border-4 border-gray-800 shadow-inner">
+                      <h4 className="text-center font-bold text-gray-800 text-lg" style={{ fontFamily: 'monospace' }}>
+                        ACHIEVEMENTS
+                      </h4>
+                      <div className="h-12 flex items-center justify-center">
+                        {/* Trophies will be added here */}
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
-
         </div>
       </main>
     </div>

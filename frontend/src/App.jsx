@@ -35,6 +35,7 @@ export const UserProvider = ({ children }) => {
     health: 10,
     armStrength: 10,
     legStrength: 10,
+    backStrength: 10,
     stamina: 10,
   });
 
