@@ -29,9 +29,19 @@ const profileSchema = new mongoose.Schema({
       diastolic: { type: Number, required: false }
     }
   },
+  lifestyle: {
+    exerciseFrequency: { type: Number, required: false },
+    smokingStatus: { type: String, enum: ['never', 'former', 'current'], required: false },
+    alcoholConsumption: { type: Number, required: false },
+    sleepHours: { type: Number, required: false },
+    stressLevel: { type: Number, required: false, min: 1, max: 10 }
+  },
+  fitness: {
+    cardioPerformance: { type: String, required: false },
+    strengthLevel: { type: String, enum: ['beginner', 'intermediate', 'advanced'], required: false },
+    flexibilityLevel: { type: String, enum: ['poor', 'average', 'good', 'excellent'], required: false }
+  },
   // We will add these sections in later steps
-  // lifestyle: { ... },
-  // fitness: { ... },
   // biomarkers: { ... }
 }, { timestamps: true });
 

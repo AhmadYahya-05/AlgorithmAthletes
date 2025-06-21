@@ -1,17 +1,42 @@
 import asyncHandler from 'express-async-handler';
 import Profile from '../models/Profile.js';
 
+// @desc    Get user profile
+// @route   GET /api/profile
+// @access  Private
+export const getProfile = asyncHandler(async (req, res) => {
+  const profile = await Profile.findOne({ user: req.user.id });
+
+  if (!profile) {
+    res.status(404);
+    throw new Error('Profile not found');
+  }
+
+  res.json(profile);
+});
+
 // @desc    Create or update user profile
 // @route   POST /api/profile
 // @access  Private
 export const updateProfile = asyncHandler(async (req, res) => {
   const {
+    // Basic Metrics
     chronologicalAge,
     height,
     weight,
     restingHeartRate,
     systolicBP,
-    diastolicBP
+    diastolicBP,
+    // Lifestyle
+    exerciseFrequency,
+    smokingStatus,
+    alcoholConsumption,
+    sleepHours,
+    stressLevel,
+    // Fitness
+    cardioPerformance,
+    strengthLevel,
+    flexibilityLevel
   } = req.body;
 
   // Simple validation
@@ -31,6 +56,18 @@ export const updateProfile = asyncHandler(async (req, res) => {
         systolic: systolicBP,
         diastolic: diastolicBP
       }
+    },
+    lifestyle: {
+      exerciseFrequency,
+      smokingStatus,
+      alcoholConsumption,
+      sleepHours,
+      stressLevel
+    },
+    fitness: {
+      cardioPerformance,
+      strengthLevel,
+      flexibilityLevel
     }
   };
 
