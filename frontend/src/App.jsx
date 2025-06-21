@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import ExerciseForm from './pages/ExerciseForm';
+import MediaPipeExerciseForm from './pages/MediaPipeExerciseForm';
 import './App.css';
 
 function App() {
@@ -101,6 +102,14 @@ function App() {
             element={
               isAuthenticated ? 
                 <ExerciseForm user={user} onLogout={logout} /> : 
+                <Navigate to="/login" replace />
+            } 
+          />
+          <Route 
+            path="/mediapipe-exercise-form" 
+            element={
+              isAuthenticated ? 
+                <MediaPipeExerciseForm user={user} onLogout={logout} /> : 
                 <Navigate to="/login" replace />
             } 
           />

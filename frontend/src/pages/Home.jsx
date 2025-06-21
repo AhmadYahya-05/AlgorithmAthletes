@@ -1,6 +1,6 @@
 // This will be the home page users are directed to after logging in / creating an account 
 
-import { LogOut, User, Trophy, Target, BarChart3, Video } from 'lucide-react';
+import { LogOut, User, Trophy, Target, BarChart3, Video, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Home = ({ user, onLogout }) => {
@@ -12,6 +12,10 @@ const Home = ({ user, onLogout }) => {
 
   const handleExerciseForm = () => {
     navigate('/exercise-form');
+  };
+
+  const handleMediaPipeExerciseForm = () => {
+    navigate('/mediapipe-exercise-form');
   };
 
   return (
@@ -133,6 +137,17 @@ const Home = ({ user, onLogout }) => {
                 <h4 className="font-semibold text-gray-900">Exercise Form Analysis</h4>
               </div>
               <p className="text-gray-600 text-sm">Get AI feedback on your exercise form</p>
+            </button>
+
+            <button 
+              onClick={handleMediaPipeExerciseForm}
+              className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition duration-200 text-left"
+            >
+              <div className="flex items-center mb-3">
+                <Activity className="h-6 w-6 text-purple-600 mr-3" />
+                <h4 className="font-semibold text-gray-900">MediaPipe Analysis</h4>
+              </div>
+              <p className="text-gray-600 text-sm">Advanced pose detection for precise form analysis</p>
             </button>
           </div>
         </div>
