@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect, createContext, useContext, useMemo } from 'react';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
@@ -32,12 +32,17 @@ export const UserProvider = ({ children }) => {
 
   const [activeCharacter, setActiveCharacter] = useState('Iron Fist');
   const [characterStats, setCharacterStats] = useState({
-    health: 10,
-    armStrength: 10,
-    legStrength: 10,
-    backStrength: 10,
+    armStrength: 35,
+    legStrength: 25,
+    backStrength: 20,
     stamina: 10,
   });
+
+  const health = useMemo(() => {
+    const { armStrength, backStrength, legStrength } = characterStats;
+    // Weighted average: arm and back have 2x the weight of leg.
+    return Math.round((armStrength * 2 + backStrength * 2 + legStrength * 1) / 5);
+  }, [characterStats.armStrength, characterStats.backStrength, characterStats.legStrength]);
 
   const updateUserStats = (newStats) => {
     setUserStats(prev => ({ ...prev, ...newStats }));
@@ -53,7 +58,7 @@ export const UserProvider = ({ children }) => {
       updateUserStats,
       activeCharacter,
       setActiveCharacter,
-      characterStats,
+      characterStats: { ...characterStats, health },
       updateCharacterStats
     }}>
       {children}
