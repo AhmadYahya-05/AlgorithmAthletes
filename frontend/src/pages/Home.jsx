@@ -452,23 +452,13 @@ const Home = ({ user, onLogout }) => {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
             <CharacterCard 
-              name="NUTRITIONIST"
-              emoji="🥗"
-              description="Get personalized meal plans"
-              route="/nutritionist"
+              name="YOUR TEAM"
+              emoji="👥"
+              description="Get personalized advice from your AI coaches"
+              route="/ai-coach"
               bgColor="from-green-400 to-green-600"
               borderColor="border-yellow-400"
               textColor="text-green-100"
-            />
-
-            <CharacterCard 
-              name="AI COACH"
-              emoji="🤖"
-              description="Smart recommendations & motivation"
-              route="/ai-coach"
-              bgColor="from-cyan-400 to-cyan-600"
-              borderColor="border-yellow-400"
-              textColor="text-cyan-100"
             />
 
             <CharacterCard 
