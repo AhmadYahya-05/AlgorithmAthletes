@@ -6,13 +6,20 @@ export const UserContext = createContext();
 
 // User Context Provider Component
 export const UserProvider = ({ children }) => {
-  const [userStats, setUserStats] = useState({
-    level: 1,
-    xp: 0,
-    xpToNext: 100, // Default value, can be calculated
+  const [userStats, setUserStats] = useState(() => {
+    // Load userStats from localStorage on initial state
+    const savedStats = localStorage.getItem('userStats');
+    return savedStats ? JSON.parse(savedStats) : {
+      level: 1,
+      xp: 0,
+      xpToNext: 100,
+      streak: 0,
+      workoutsCompleted: 0,
+    };
   });
 
   const [activeCharacter, setActiveCharacter] = useState('Iron Fist');
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
 
   const [characterStats, setCharacterStats] = useState({
     health: 10,
@@ -56,17 +63,60 @@ export const UserProvider = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         const user = data.data.user;
-        setUserStats({
-          level: user.stats.level,
-          xp: user.stats.xp,
-          xpToNext: (user.stats.level || 1) * 100, // Example calculation
+        
+        // Only update if we don't have local XP data or if local XP is 0
+        setUserStats(prev => {
+          // If we already have XP locally, keep it
+          if (prev.xp > 0) {
+            return prev;
+          }
+          
+          // Otherwise, use backend data
+          return {
+            level: user.stats?.level || 1,
+            xp: user.stats?.xp || 0,
+            xpToNext: ((user.stats?.level || 1) * 100),
+            streak: user.stats?.streak || 0,
+            workoutsCompleted: user.stats?.workoutsCompleted || 0,
+          };
         });
-        setActiveCharacter(user.character);
+        setActiveCharacter(user.character || 'Iron Fist');
       }
     } catch (error) {
       console.error("Failed to fetch user stats:", error);
     }
   }, []);
+
+  // Function to add XP and handle leveling up
+  const addXP = useCallback((amount) => {
+    console.log(`Adding ${amount} XP to current XP: ${userStats.xp}`);
+    setUserStats(prev => {
+      const newXP = prev.xp + amount;
+      const newLevel = Math.floor(newXP / 100) + 1; // Level up every 100 XP
+      const xpToNext = newLevel * 100;
+      
+      console.log(`New XP: ${newXP}, New Level: ${newLevel}, XP to Next: ${xpToNext}`);
+      
+      const newStats = {
+        ...prev,
+        xp: newXP,
+        level: newLevel,
+        xpToNext: xpToNext
+      };
+      
+      // Save to localStorage
+      localStorage.setItem('userStats', JSON.stringify(newStats));
+      
+      // Check if level increased
+      if (newLevel > prev.level) {
+        setIsLevelingUp(true);
+        // Reset level up animation after 3 seconds
+        setTimeout(() => setIsLevelingUp(false), 3000);
+      }
+      
+      return newStats;
+    });
+  }, [userStats.xp]);
 
   const addWorkout = useCallback((workout) => {
     const newWorkout = {
@@ -79,7 +129,20 @@ export const UserProvider = ({ children }) => {
       localStorage.setItem('workouts', JSON.stringify(updatedWorkouts));
       return updatedWorkouts;
     });
-  }, []);
+    
+    // Add XP for completing a workout
+    addXP(20);
+    
+    // Update workouts completed count
+    setUserStats(prev => {
+      const newStats = {
+        ...prev,
+        workoutsCompleted: prev.workoutsCompleted + 1
+      };
+      localStorage.setItem('userStats', JSON.stringify(newStats));
+      return newStats;
+    });
+  }, [addXP]);
 
   const deleteWorkout = useCallback((workoutId) => {
     setWorkouts(prev => {
@@ -120,7 +183,9 @@ export const UserProvider = ({ children }) => {
     fetchUserStats, // Expose fetch function
     profileData,
     updateProfileData,
-  }), [userStats, activeCharacter, characterStats, workouts, addWorkout, deleteWorkout, getWorkoutDates, fetchUserStats, profileData]);
+    addXP,
+    isLevelingUp,
+  }), [userStats, activeCharacter, characterStats, workouts, addWorkout, deleteWorkout, getWorkoutDates, fetchUserStats, profileData, addXP, isLevelingUp]);
 
   return (
     <UserContext.Provider value={value}>
