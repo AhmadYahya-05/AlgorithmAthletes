@@ -4,8 +4,10 @@ import { Camera, Upload, Play, Pause, RotateCcw, Download, Star, AlertTriangle, 
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/api.js';
 import NavigationBar from '../components/NavigationBar';
+import { useNavigate } from 'react-router-dom';
 
 const AIFormChecker = ({ user, onLogout }) => {
+  const navigate = useNavigate();
   const [isLiveMode, setIsLiveMode] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [uploadedVideo, setUploadedVideo] = useState(null);
@@ -2226,7 +2228,31 @@ const AIFormChecker = ({ user, onLogout }) => {
                   <li>• Upload videos for detailed backend analysis</li>
                 </ul>
               </div>
-            </motion.div>
+
+              {/* Coach Image and Text Bubble */}
+              <div className="mt-6 flex items-center justify-center space-x-4">
+                {/* Text Bubble */}
+                <div className="relative bg-white border-2 border-gray-300 rounded-lg p-3 shadow-lg max-w-xs">
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[10px] border-l-white"></div>
+                  <p className="text-gray-800 text-sm font-semibold text-center">
+                    "You call that good form?! CLICK ME, NOW!"
+                  </p>
+                </div>
+                
+                {/* Coach Image */}
+                <button 
+                  onClick={() => navigate('/ai-coach')}
+                  className="flex-shrink-0 hover:scale-105 transform transition-all duration-200 cursor-pointer"
+                >
+                  <img 
+                    src="/coachthumb.png" 
+                    alt="AI Coach" 
+                    className="w-24 h-24 rounded-lg"
+                    style={{ imageRendering: 'pixelated' }}
+                  />
+                </button>
+              </div>
+           </motion.div>
           </div>
         </div>
       </div>
