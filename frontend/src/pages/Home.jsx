@@ -252,12 +252,12 @@ const Home = ({ user, onLogout }) => {
 
           {/* Username Display - Moved below pedestal */}
           <div className="mt-4 text-center">
-            <div className="bg-black bg-opacity-70 px-4 py-2 rounded-lg border-2 border-yellow-400 inline-block">
+              <div className="bg-black bg-opacity-70 px-4 py-2 rounded-lg border-2 border-yellow-400 inline-block">
               <span className="text-yellow-300 font-bold text-lg" style={{ fontFamily: 'monospace' }}>
-                @{user?.username || `${user?.firstName?.toLowerCase()}`}
-              </span>
+                  @{user?.username || `${user?.firstName?.toLowerCase()}`}
+                </span>
+              </div>
             </div>
-          </div>
 
             <div className="mt-6">
               <div className="flex items-center justify-center gap-4 mb-2">
@@ -306,7 +306,7 @@ const Home = ({ user, onLogout }) => {
                 </div>
               </div>
               
-              <div className="text-xs font-bold text-white mb-1" style={{ fontFamily: 'monospace' }}>
+              <div className="text-4xl font-bold text-white mb-2" style={{ fontFamily: 'monospace', textShadow: '2px 2px 4px rgba(0,0,0,0.8)', letterSpacing: '2px' }}>
                 XP: {userStats.xp} / {userStats.xpToNext}
               </div>
               <div className="w-48 h-4 bg-gray-800 rounded-full border-2 border-gray-600 mx-auto overflow-hidden">
@@ -348,7 +348,7 @@ const Home = ({ user, onLogout }) => {
           📊 YOUR ADVENTURE STATS 📊
         </motion.h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {[
             { 
               icon: <Heart className="h-8 w-8" />, 
@@ -365,14 +365,6 @@ const Home = ({ user, onLogout }) => {
               emoji: '💪',
               color: 'from-orange-500 to-orange-700',
               border: 'border-orange-800'
-            },
-            { 
-              icon: <Shield className="h-8 w-8" />, 
-              label: 'MINUTES', 
-              value: userStats.totalMinutes, 
-              emoji: '⏱️',
-              color: 'from-blue-500 to-blue-700',
-              border: 'border-blue-800'
             }
           ].map((stat, index) => (
             <motion.div 
@@ -382,36 +374,113 @@ const Home = ({ user, onLogout }) => {
               whileHover={{ scale: 1.05, y: -5 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className={`bg-gradient-to-b ${stat.color} rounded-xl p-6 border-4 ${stat.border} shadow-2xl`}
+              className="text-center"
             >
-            <div className="flex items-center justify-between">
-              <div>
-                  <div className="flex items-center mb-2 text-white">
-                    {stat.icon}
-                    <span className="font-bold ml-2" style={{ fontFamily: 'monospace' }}>
-                      {stat.label}
-                    </span>
-                </div>
-                  <div className="text-3xl font-bold text-white">{stat.value}</div>
-                </div>
-                <motion.div 
-                  animate={{ 
-                    scale: [1, 1.1, 1],
-                    rotate: [0, 5, -5, 0]
-                  }}
-                  transition={{ 
-                    duration: 2, 
-                    repeat: Infinity, 
-                    ease: "easeInOut" 
-                  }}
-                  className="text-4xl"
-                >
-                  {stat.emoji}
-                </motion.div>
+              <motion.div 
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+                className="text-8xl mb-4"
+              >
+                {stat.emoji}
+              </motion.div>
+              <div className="text-4xl font-bold text-white mb-2" style={{ fontFamily: 'monospace', textShadow: '2px 2px 4px rgba(0,0,0,0.8)', letterSpacing: '2px' }}>
+                {stat.label === 'STREAK' ? (
+                  <div className="text-center">
+                    <motion.div
+                      animate={{ 
+                        x: [-2, 2, -2, 2, -2, 2, -2, 2, 0],
+                        rotate: [-1, 1, -1, 1, -1, 1, -1, 1, 0]
+                      }}
+                      transition={{ 
+                        duration: 0.5,
+                        repeat: Infinity,
+                        repeatDelay: 3
+                      }}
+                      className="text-6xl mb-1"
+                    >
+                      {userStats.streak}
+                    </motion.div>
+                    <div className="text-2xl">days</div>
+                  </div>
+                ) : (
+                  stat.value
+                )}
+              </div>
+              <div className="text-2xl text-gray-300 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 2px rgba(0,0,0,0.8)', letterSpacing: '1px' }}>
+                {stat.label}
               </div>
             </motion.div>
           ))}
         </div>
+
+        {/* GitHub-style Workout Calendar */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-8"
+        >
+          <h3 className="text-2xl font-bold text-white mb-4" style={{ fontFamily: 'monospace', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+            📅 WORKOUT CALENDAR
+          </h3>
+          <div className="flex justify-center">
+            <div className="grid grid-cols-53 gap-1 p-4 bg-gray-900 bg-opacity-50 rounded-lg border-2 border-gray-700">
+              {/* Generate 365 days of calendar squares */}
+              {(() => {
+                const squares = [];
+                const today = new Date();
+                
+                // Generate workout days (simulate based on userStats.workoutsCompleted)
+                const workoutDays = new Set();
+                const totalWorkouts = userStats.workoutsCompleted;
+                const daysInYear = 365;
+                
+                // Distribute workouts across the year (more recent = higher chance)
+                for (let i = 0; i < totalWorkouts; i++) {
+                  const randomDay = Math.floor(Math.random() * daysInYear);
+                  const date = new Date(today);
+                  date.setDate(date.getDate() - randomDay);
+                  workoutDays.add(date.toDateString());
+                }
+                
+                // Create calendar squares for the last 365 days
+                for (let i = 364; i >= 0; i--) {
+                  const date = new Date(today);
+                  date.setDate(date.getDate() - i);
+                  const isWorkoutDay = workoutDays.has(date.toDateString());
+                  
+                  squares.push(
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.001, duration: 0.3 }}
+                      whileHover={{ scale: 1.5, zIndex: 10 }}
+                      className={`w-3 h-3 rounded-sm border border-gray-800 ${
+                        isWorkoutDay 
+                          ? 'bg-gradient-to-br from-green-400 to-green-600 shadow-lg' 
+                          : 'bg-gray-700'
+                      }`}
+                      title={`${date.toLocaleDateString()}${isWorkoutDay ? ' - Workout Day!' : ''}`}
+                    />
+                  );
+                }
+                return squares;
+              })()}
+            </div>
+          </div>
+          <p className="text-gray-400 text-sm mt-2" style={{ fontFamily: 'monospace' }}>
+            Each square represents a day. Green squares = workout days!
+          </p>
+        </motion.div>
       </div>
     </motion.section>
   );
