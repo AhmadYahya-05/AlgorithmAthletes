@@ -199,11 +199,12 @@ const Home = ({ user, onLogout }) => {
               //  ease: "easeInOut" 
               //}}
               className="relative z-0 mt-36"
+              //style={{ marginTop: '204px' }}
             >
               <img 
                 src="/pedestal.png" 
                 alt="Pedestal" 
-                className="w-[576px] h-[384px] object-contain mx-auto"
+                className="w-[441px] h-[293px] object-contain mx-auto"
                 style={{ imageRendering: 'pixelated' }}
               />
             </motion.div>
