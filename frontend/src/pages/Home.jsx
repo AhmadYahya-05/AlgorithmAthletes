@@ -411,7 +411,7 @@ const Home = ({ user, onLogout }) => {
                       {userStats.streak}
                     </motion.div>
                     <div className="text-2xl">days</div>
-                  </div>
+                </div>
                 ) : (
                   stat.value
                 )}
@@ -421,7 +421,7 @@ const Home = ({ user, onLogout }) => {
               </div>
             </motion.div>
           ))}
-        </div>
+          </div>
 
         {/* GitHub-style Workout Calendar */}
         <motion.div 
@@ -484,7 +484,7 @@ const Home = ({ user, onLogout }) => {
             Each square represents a day. Green squares = workout days!
           </p>
         </motion.div>
-      </div>
+        </div>
     </motion.section>
   );
 
@@ -510,7 +510,7 @@ const Home = ({ user, onLogout }) => {
             <p className="text-gray-300 text-lg">Choose your next adventure!</p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <CharacterCard 
               name="NUTRITIONIST"
               emoji="🥗"
@@ -520,17 +520,6 @@ const Home = ({ user, onLogout }) => {
               bgColor="from-green-400 to-green-600"
               borderColor="border-green-700"
               textColor="text-green-100"
-            />
-
-            <CharacterCard 
-              name="PERSONAL TRAINER"
-              emoji="💪"
-              description="Custom workout plans & form feedback"
-              xpReward="+50 XP"
-              route="/trainer"
-              bgColor="from-orange-400 to-orange-600"
-              borderColor="border-orange-700"
-              textColor="text-orange-100"
             />
 
             <CharacterCard 
@@ -578,8 +567,8 @@ const Home = ({ user, onLogout }) => {
       
       <main className="relative z-10">
         <HeroSection />
-        <StatsPanel />
         <QuestBoard />
+        <StatsPanel />
 
         {/* Achievement Banner */}
         <motion.section 
