@@ -7,12 +7,19 @@
     "install:backend": "npm install --prefix backend",
     "install:frontend": "npm install --prefix frontend",
     "install": "npm run install:backend && npm run install:frontend",
-    "build": "npm run build --prefix frontend",
-    "start": "node backend/server.js"
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && npm start",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
   },
   "author": "Emaad, Ahmad, Sebastian",
   "license": "ISC",
   "dependencies": {
     "framer-motion": "^12.18.1"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
