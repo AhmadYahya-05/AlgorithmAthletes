@@ -435,15 +435,14 @@ const Home = ({ user, onLogout }) => {
             <p className="text-gray-300 text-lg">Choose your next adventure!</p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
             <CharacterCard 
               name="NUTRITIONIST"
               emoji="🥗"
               description="Get personalized meal plans"
-              xpReward="+25 XP"
               route="/nutritionist"
               bgColor="from-green-400 to-green-600"
-              borderColor="border-green-700"
+              borderColor="border-yellow-400"
               textColor="text-green-100"
             />
 
@@ -451,10 +450,9 @@ const Home = ({ user, onLogout }) => {
               name="AI COACH"
               emoji="🤖"
               description="Smart recommendations & motivation"
-              xpReward="+30 XP"
               route="/ai-coach"
               bgColor="from-cyan-400 to-cyan-600"
-              borderColor="border-cyan-700"
+              borderColor="border-yellow-400"
               textColor="text-cyan-100"
             />
 
@@ -462,21 +460,19 @@ const Home = ({ user, onLogout }) => {
               name="AI FORM CHECKER"
               emoji="📹"
               description="Real-time form analysis with AI"
-              xpReward="+40 XP"
               route="/ai-form-checker"
               bgColor="from-purple-400 to-purple-600"
-              borderColor="border-purple-700"
+              borderColor="border-yellow-400"
               textColor="text-purple-100"
             />
 
             <CharacterCard 
-              name="PARTY SCREEN"
+              name="CHARACTER SELECT & STATS"
               emoji="🎮"
-              description="View and manage your characters"
-              xpReward="VIEW"
+              description="Select your character and view your stats"
               route="/character"
               bgColor="from-indigo-400 to-indigo-600"
-              borderColor="border-indigo-700"
+              borderColor="border-yellow-400"
               textColor="text-indigo-100"
             />
           </div>

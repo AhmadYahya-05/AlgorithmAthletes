@@ -5,10 +5,9 @@ const CharacterCard = ({
   name, 
   emoji, 
   description, 
-  xpReward, 
   route, 
   bgColor = "from-blue-400 to-blue-600",
-  borderColor = "border-blue-700",
+  borderColor = "border-yellow-400",
   textColor = "text-blue-100"
 }) => {
   const [isHovering, setIsHovering] = useState(false);
@@ -20,31 +19,23 @@ const CharacterCard = ({
 
   return (
     <button 
-      className={`bg-gradient-to-b ${bgColor} p-6 rounded-xl border-4 ${borderColor} shadow-lg hover:scale-105 transform transition-all duration-200 group w-full`}
+      className={`bg-gradient-to-b ${bgColor} p-3 rounded-lg border-2 ${borderColor} shadow-lg hover:scale-105 transform transition-all duration-200 group w-full aspect-square`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       onClick={handleClick}
     >
-      <div className="text-center">
+      <div className="text-center h-full flex flex-col justify-center">
         <div 
-          className={`text-4xl mb-3 transition-all duration-300 ${
+          className={`text-2xl mb-2 transition-all duration-300 ${
             isHovering ? 'animate-bounce transform scale-110' : ''
           }`}
         >
           {emoji}
         </div>
-        <h4 className="font-bold text-white text-lg mb-2" style={{ fontFamily: 'monospace' }}>
+        <h4 className="font-bold text-white text-lg mb-1" style={{ fontFamily: 'monospace' }}>
           {name}
         </h4>
-        <p className={`${textColor} text-sm`}>{description}</p>
-        <div className="mt-3 bg-yellow-400 text-gray-800 px-3 py-1 rounded-full text-xs font-bold">
-          {xpReward}
-        </div>
-        {isHovering && (
-          <div className="mt-2 text-xs text-white animate-pulse">
-            ✨ Click to visit! ✨
-          </div>
-        )}
+        <p className={`${textColor} text-base leading-tight`}>{description}</p>
       </div>
     </button>
   );
