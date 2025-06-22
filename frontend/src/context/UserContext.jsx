@@ -22,6 +22,12 @@ export const UserProvider = ({ children }) => {
     stamina: 10,
   });
 
+  const [workouts, setWorkouts] = useState(() => {
+    // Load workouts from localStorage on initial state
+    const savedWorkouts = localStorage.getItem('workouts');
+    return savedWorkouts ? JSON.parse(savedWorkouts) : [];
+  });
+
   const [profileData, setProfileData] = useState({
     chronologicalAge: '',
     height: '',
@@ -62,6 +68,37 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
+  const addWorkout = useCallback((workout) => {
+    const newWorkout = {
+      id: Date.now(),
+      ...workout
+    };
+    setWorkouts(prev => {
+      const updatedWorkouts = [newWorkout, ...prev];
+      // Save to localStorage
+      localStorage.setItem('workouts', JSON.stringify(updatedWorkouts));
+      return updatedWorkouts;
+    });
+  }, []);
+
+  const deleteWorkout = useCallback((workoutId) => {
+    setWorkouts(prev => {
+      const updatedWorkouts = prev.filter(workout => workout.id !== workoutId);
+      // Save to localStorage
+      localStorage.setItem('workouts', JSON.stringify(updatedWorkouts));
+      return updatedWorkouts;
+    });
+  }, []);
+
+  const getWorkoutDates = useCallback(() => {
+    return workouts.map(workout => workout.date);
+  }, [workouts]);
+
+  // Update localStorage whenever workouts change
+  useEffect(() => {
+    localStorage.setItem('workouts', JSON.stringify(workouts));
+  }, [workouts]);
+
   useEffect(() => {
     fetchUserStats();
   }, [fetchUserStats]);
@@ -76,10 +113,14 @@ export const UserProvider = ({ children }) => {
     setActiveCharacter,
     characterStats,
     setCharacterStats,
+    workouts,
+    addWorkout,
+    deleteWorkout,
+    getWorkoutDates,
     fetchUserStats, // Expose fetch function
     profileData,
     updateProfileData,
-  }), [userStats, activeCharacter, characterStats, fetchUserStats, profileData]);
+  }), [userStats, activeCharacter, characterStats, workouts, addWorkout, deleteWorkout, getWorkoutDates, fetchUserStats, profileData]);
 
   return (
     <UserContext.Provider value={value}>
