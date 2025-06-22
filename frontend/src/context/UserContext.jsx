@@ -167,7 +167,7 @@ export const UserProvider = ({ children }) => {
   }, [fetchUserStats]);
 
   const updateProfileData = useCallback((newData) => {
-    setProfileData(prev => ({ ...prev, newData }));
+    setProfileData(prev => ({ ...prev, ...newData }));
   }, []);
 
   const value = useMemo(() => ({

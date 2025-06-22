@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useMemo } from 'react';
 import { UserContext } from '../context/UserContext';
 import NavigationBar from '../components/NavigationBar';
 import { motion } from 'framer-motion';
@@ -7,6 +7,18 @@ import { API_ENDPOINTS } from '../config/api';
 const ProfilePage = ({ user, onLogout }) => {
   const { profileData, updateProfileData } = useContext(UserContext);
   const [status, setStatus] = useState({ loading: false, error: null, success: false });
+
+  // Create stable star positions that won't change on re-renders
+  const starPositions = useMemo(() => {
+    return [...Array(50)].map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      width: `${Math.random() * 2 + 1}px`,
+      height: `${Math.random() * 2 + 1}px`,
+      duration: Math.random() * 3 + 2,
+    }));
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -58,11 +70,21 @@ const ProfilePage = ({ user, onLogout }) => {
 
     fetchProfile();
   }, []);
-
+    
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Use valueAsNumber for number inputs if browser supports it, otherwise parse it
-    const parsedValue = e.target.type === 'number' ? e.target.valueAsNumber || parseFloat(e.target.value) : value;
+    // For number inputs, allow empty values and only parse when there's a value
+    let parsedValue = value;
+    if (e.target.type === 'number') {
+      // Allow empty string for number inputs
+      if (value === '') {
+        parsedValue = '';
+      } else {
+        // Only parse if there's a valid number
+        const numValue = parseFloat(value);
+        parsedValue = isNaN(numValue) ? value : numValue;
+      }
+    }
     updateProfileData({ [name]: parsedValue });
   };
 
@@ -100,18 +122,18 @@ const ProfilePage = ({ user, onLogout }) => {
     <div className="min-h-screen w-full bg-gradient-to-b from-[#2D1B69] to-[#1E3A8A] text-white" style={{ fontFamily: 'monospace' }}>
       {/* Stars in background */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {[...Array(50)].map((_, i) => (
+        {starPositions.map(({ id, left, top, width, height, duration }) => (
           <motion.div
-            key={i}
+            key={id}
             className="absolute bg-white rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 2 + 1}px`,
-              height: `${Math.random() * 2 + 1}px`,
+              left: left,
+              top: top,
+              width: width,
+              height: height,
             }}
             animate={{ opacity: [0.2, 1, 0.2] }}
-            transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: duration, repeat: Infinity, ease: "easeInOut" }}
           />
         ))}
       </div>
