@@ -42,7 +42,7 @@ const AnimatedCharacter = ({ emoji, delay, position }) => (
         fill="#fcd34d"
         style={{ filter: 'url(#text-shadow)' }}
       >
-        FITNESS QUEST
+        FITQUEST
       </text>
     </svg>
   );

@@ -8,6 +8,7 @@ import CharacterCard from '../components/CharacterCard';
 import NavigationBar from '../components/NavigationBar';
 import { getCharacterSprite, characters } from '../data/characters';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const Home = ({ user, onLogout }) => {
   const { userStats, characterStats, activeCharacter, workouts } = useContext(UserContext);
@@ -25,27 +26,40 @@ const Home = ({ user, onLogout }) => {
 
   // Parallax Background Component
   const ParallaxBackground = () => (
-    <div className="fixed inset-0 z-0 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
+    <div className="absolute inset-0 z-0 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
       {/* Sky Layer */}
       <motion.div 
         style={{ y: skyY }}
         className="absolute inset-0 bg-gradient-to-b from-[#2D1B69] to-[#1E3A8A]"
       >
         {/* Stars */}
-        {[...Array(50)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute bg-white rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 80}%`, // Spread stars out more vertically
-              width: `${Math.random() * 2 + 1}px`,
-              height: `${Math.random() * 2 + 1}px`,
-            }}
-            animate={{ opacity: [0.2, 1, 0.2] }}
-            transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, ease: "easeInOut" }}
-          />
-        ))}
+        {[...Array(350)].map((_, i) => { 
+          const size = Math.random() * 3 + 1; 
+          const isGlowing = Math.random() > 0.5;
+
+          return (
+            <motion.div
+              key={`star-${i}`}
+              className="absolute bg-white rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${size}px`,
+                height: `${size}px`,
+                boxShadow: isGlowing ? "0 0 8px rgba(255, 255, 255, 0.3)" : "none",
+              }}
+              animate={{
+                opacity: [Math.random() * 0.4 + 0.2, 0.9, Math.random() * 0.4 + 0.2],
+                scale: isGlowing ? [1, 1.15, 1] : 1,
+              }}
+              transition={{
+                duration: Math.random() * 5 + 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          );
+        })}
         {/* Moon */}
         <div className="absolute top-12 right-16 text-6xl opacity-90">🌙</div>
       </motion.div>
@@ -64,22 +78,22 @@ const Home = ({ user, onLogout }) => {
         </style>
       </defs>
       
-      {/* Decorative Vines */}
+      {/* Decorative Gold Lines */}
       <motion.path
-        d="M 10,80 C 25,50, 45,110, 60,80"
+        d="M 20,75 C 50,25, 80,125, 120,75"
         fill="none"
-        stroke="#10B981"
-        strokeWidth="5"
+        stroke="#fcd34d"
+        strokeWidth="14"
         strokeLinecap="round"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
       />
       <motion.path
-        d="M 790,80 C 775,50, 755,110, 740,80"
+        d="M 780,75 C 750,25, 720,125, 680,75"
         fill="none"
-        stroke="#10B981"
-        strokeWidth="5"
+        stroke="#fcd34d"
+        strokeWidth="14"
         strokeLinecap="round"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
@@ -96,7 +110,7 @@ const Home = ({ user, onLogout }) => {
         fill="#fcd34d" // yellow-300
         style={{ filter: 'url(#text-shadow)' }}
       >
-        FITNESS QUEST
+        FITQUEST
       </text>
     </svg>
   );
@@ -116,6 +130,7 @@ const Home = ({ user, onLogout }) => {
     >
       <LogoSVG />
       <motion.div 
+        y={10}
         animate={{ rotate: [0, 5, -5, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         className="text-4xl mb-4"
@@ -534,6 +549,7 @@ const Home = ({ user, onLogout }) => {
           </div>
         </motion.section>
       </main>
+      <Footer />
     </div>
   );
 };

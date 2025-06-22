@@ -34,7 +34,7 @@ const AboutUsPage = ({ user, onLogout }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1E3A8A] to-[#0F172A] text-white p-4" style={{ fontFamily: 'monospace' }}>
+    <div className="min-h-screen bg-gradient-to-b from-[#2D1B69] to-[#1E3A8A] text-white p-4" style={{ fontFamily: 'monospace' }}>
       <NavigationBar user={user} onLogout={onLogout} />
       
       <div className="container mx-auto max-w-5xl pt-20 text-center">
@@ -42,7 +42,7 @@ const AboutUsPage = ({ user, onLogout }) => {
           <h1 className="text-5xl font-bold text-yellow-300 mb-4" style={{ fontFamily: 'VT323, monospace', textShadow: '3px 3px 0px #d97706' }}>
             Our Origin Story
           </h1>
-          <p className="text-lg text-cyan-200 mb-12">The tale of how three friends brought Fitness Quest to life.</p>
+          <p className="text-lg text-cyan-200 mb-12">The tale of how three friends brought FitQuest to life.</p>
         </motion.div>
 
         <motion.div 
@@ -51,9 +51,10 @@ const AboutUsPage = ({ user, onLogout }) => {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-8 mb-16 text-left leading-relaxed"
         >
-          <p className="mb-4">It all started with a simple idea: what if fitness wasn't a chore, but an epic adventure? Three friends, brought together by a shared passion for gaming and a desire to make health and wellness more engaging, decided to turn this vision into reality.</p>
-          <p className="mb-4">During a weekend hackathon, fueled by coffee and creativity, the concept for Fitness Quest was born. We wanted to create an app that combined the best elements of RPGs—leveling up, completing quests, and teaming up with friends—with real-world fitness goals.</p>
-          <p>This project is the culmination of countless hours of coding, designing, and dreaming. We hope it inspires you to start your own fitness quest and become the hero of your story.</p>
+          <p className="mb-4">With a combined passion for fitness, artificial intelligence, and the need for more innovative approaches to get Gen Z excited about their health, we created FitQuest.</p>
+          <p className="mb-4">This project came to life during the Spurhacks 2025 Hackathon event at 10pm on a Friday night: during this 36-hour sprint, we, the Algorithm Athletes, used the MERN stack to create and deploy a full-stack Gen AI fitness web application via Railway.</p>
+          <p>We utilized the Gemini API to provide users with 3 custom coaches: a motivator, nutritionist, and exercise science PhD. We leveraged the power of React to create interactive RPG-themed components with different skins and an XP leveling system.</p>
+          <p> Leveraging our diverse skillsets with experience in full-stack development, AI, and MERN, we worked with each other to bring a vision that was merely a diagram on a whiteboard at 11:26pm on a random Friday night in June.</p>
         </motion.div>
         
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
