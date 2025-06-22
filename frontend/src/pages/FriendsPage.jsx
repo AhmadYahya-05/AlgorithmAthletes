@@ -221,7 +221,7 @@ const FriendsPage = ({ user, onLogout }) => {
                   <p className="text-gray-400 text-center py-8">Loading friends...</p>
                 ) : friends.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {friends.map(friend => <UserCard key={friend._id} person={friend} isFriend />)}
+                    {friends.filter(friend => friend).map(friend => <UserCard key={friend._id} person={friend} isFriend />)}
                   </div>
                 ) : (
                   <p className="text-gray-400 text-center py-8">Your friends list is empty. Find new adventurers to team up with!</p>

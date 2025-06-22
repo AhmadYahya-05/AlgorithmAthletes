@@ -18,6 +18,8 @@ const Home = ({ user, onLogout }) => {
   // Parallax transforms for different layers
   const skyY = useTransform(scrollY, [0, 1000], [0, -50]);
 
+  const xpPercentage = (userStats.xp / userStats.xpToNext) * 100;
+
   // Parallax Background Component
   const ParallaxBackground = () => (
     <div className="fixed inset-0 z-0 overflow-hidden" style={{ imageRendering: 'pixelated' }}>
@@ -229,7 +231,7 @@ const Home = ({ user, onLogout }) => {
               <div className="w-48 h-4 bg-gray-800 rounded-full border-2 border-gray-600 mx-auto overflow-hidden">
               <motion.div 
                 initial={{ width: 0 }}
-                animate={{ width: `${(userStats.xp / userStats.xpToNext) * 100}%` }}
+                animate={{ width: `${xpPercentage}%` }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
                 className="h-full bg-gradient-to-r from-green-400 to-green-600"
               ></motion.div>
