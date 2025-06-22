@@ -1,25 +1,28 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Bot, Leaf, HelpCircle } from 'lucide-react';
+import { Bot, Leaf, Heart } from 'lucide-react';
 
 const characters = [
   { name: 'coach', icon: <Bot />, path: '/ai-coach' },
   { name: 'nutritionist', icon: <Leaf />, path: '/nutritionist' },
-  { name: 'future', icon: <HelpCircle />, path: '#' }, // Placeholder
+  { name: 'doctor', icon: <Heart />, path: '/doctor' },
 ];
 
 const CharacterToggle = ({ activeCharacter }) => {
   const navigate = useNavigate();
+
+  const handleCharacterClick = (char) => {
+    console.log('Navigating to:', char.path, 'for character:', char.name);
+    navigate(char.path);
+  };
 
   return (
     <div className="mt-4 bg-gray-800 rounded-full p-1 flex items-center justify-around border-2 border-gray-700">
       {characters.map(char => (
         <button
           key={char.name}
-          onClick={() => char.path !== '#' && navigate(char.path)}
+          onClick={() => handleCharacterClick(char)}
           className="relative w-full text-center py-2.5 rounded-full text-gray-400 hover:text-white transition-colors"
-          disabled={char.path === '#'}
-          style={{ opacity: char.path === '#' ? 0.5 : 1 }}
         >
           {activeCharacter === char.name && (
             <motion.div

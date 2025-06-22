@@ -12,6 +12,7 @@ import ProfilePage from './pages/ProfilePage';
 import FriendsPage from './pages/FriendsPage';
 import WorkoutTracker from './pages/WorkoutTracker';
 import AboutUsPage from './pages/AboutUsPage';
+import DoctorPage from './pages/DoctorPage';
 import { API_ENDPOINTS } from './config/api.js';
 import './App.css';
 import { UserProvider } from './context/UserContext.jsx';
@@ -176,6 +177,14 @@ function App() {
               element={
                 isAuthenticated ? 
                   <AboutUsPage user={user} onLogout={logout} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
+            <Route 
+              path="/doctor" 
+              element={
+                isAuthenticated ? 
+                  <DoctorPage user={user} onLogout={logout} /> : 
                   <Navigate to="/login" replace />
               } 
             />
