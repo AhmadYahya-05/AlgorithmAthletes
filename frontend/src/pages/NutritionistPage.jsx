@@ -208,7 +208,7 @@ const NutritionistPage = ({ user, onLogout }) => {
                   onClick={handleSpriteClick}
                 >
                   <img 
-                    src="/nutritionist.png" 
+                    src="/nutritionist2.png" 
                     alt="Nutritionist" 
                     className="w-full rounded-lg"
                     style={{ imageRendering: 'pixelated' }}
