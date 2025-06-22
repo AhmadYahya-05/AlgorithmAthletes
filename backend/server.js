@@ -1,3 +1,13 @@
+console.log("--- DIAGNOSTIC LOGS ---");
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`MONGO_URI is set: ${!!process.env.MONGO_URI}`);
+if (process.env.MONGO_URI) {
+  console.log('MONGO_URI is present.');
+} else {
+  console.log('MONGO_URI IS UNDEFINED OR EMPTY!');
+}
+console.log("--- END DIAGNOSTIC LOGS ---");
+
 import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
