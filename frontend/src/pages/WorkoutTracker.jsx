@@ -1,7 +1,8 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Calendar, Clock, Target, Trophy, BarChart3 } from 'lucide-react';
 import NavigationBar from '../components/NavigationBar';
+import { UserContext } from '../context/UserContext';
 
 // Move AddWorkoutForm outside main component and memoize it
 const AddWorkoutForm = memo(({ newWorkout, setNewWorkout, handleAddWorkout, setShowAddForm }) => (
@@ -108,7 +109,7 @@ const AddWorkoutForm = memo(({ newWorkout, setNewWorkout, handleAddWorkout, setS
 ));
 
 const WorkoutTracker = ({ user, onLogout }) => {
-  const [workouts, setWorkouts] = useState([]);
+  const { workouts, addWorkout, deleteWorkout } = useContext(UserContext);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newWorkout, setNewWorkout] = useState({
     name: '',
@@ -118,44 +119,9 @@ const WorkoutTracker = ({ user, onLogout }) => {
     notes: ''
   });
 
-  // Sample workout data (replace with actual API calls)
-  useEffect(() => {
-    const sampleWorkouts = [
-      {
-        id: 1,
-        name: 'Upper Body Power',
-        type: 'strength',
-        duration: 45,
-        date: '2024-01-15',
-        notes: 'Great session! Increased bench press by 10lbs'
-      },
-      {
-        id: 2,
-        name: 'Cardio Blast',
-        type: 'cardio',
-        duration: 30,
-        date: '2024-01-14',
-        notes: 'HIIT training - feeling stronger'
-      },
-      {
-        id: 3,
-        name: 'Leg Day',
-        type: 'strength',
-        duration: 60,
-        date: '2024-01-12',
-        notes: 'Squats and deadlifts - legs are toast!'
-      }
-    ];
-    setWorkouts(sampleWorkouts);
-  }, []);
-
   const handleAddWorkout = (e) => {
     e.preventDefault();
-    const workout = {
-      id: Date.now(),
-      ...newWorkout
-    };
-    setWorkouts([workout, ...workouts]);
+    addWorkout(newWorkout);
     
     setNewWorkout({
       name: '',
@@ -165,6 +131,12 @@ const WorkoutTracker = ({ user, onLogout }) => {
       notes: ''
     });
     setShowAddForm(false);
+  };
+
+  const handleDeleteWorkout = (workoutId) => {
+    if (window.confirm('Are you sure you want to delete this workout?')) {
+      deleteWorkout(workoutId);
+    }
   };
 
   const getTypeIcon = (type) => {
@@ -210,6 +182,16 @@ const WorkoutTracker = ({ user, onLogout }) => {
       {workout.notes && (
         <p className="text-sm text-gray-300 italic">"{workout.notes}"</p>
       )}
+      
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={() => handleDeleteWorkout(workout.id)}
+          className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition duration-200"
+          style={{ fontFamily: 'monospace' }}
+        >
+          Delete
+        </button>
+      </div>
     </motion.div>
   );
 

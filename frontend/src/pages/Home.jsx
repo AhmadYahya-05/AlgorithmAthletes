@@ -6,11 +6,11 @@ import { LogOut, User, Trophy, Target, BarChart3, Sword, Shield, Heart, Download
 import { UserContext } from '../context/UserContext';
 import CharacterCard from '../components/CharacterCard';
 import NavigationBar from '../components/NavigationBar';
-import { getCharacterSprite } from '../data/characters';
+import { getCharacterSprite, characters } from '../data/characters';
 import { useNavigate } from 'react-router-dom';
 
 const Home = ({ user, onLogout }) => {
-  const { userStats, characterStats, activeCharacter } = useContext(UserContext);
+  const { userStats, characterStats, activeCharacter, workouts } = useContext(UserContext);
   const navigate = useNavigate();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
@@ -19,6 +19,9 @@ const Home = ({ user, onLogout }) => {
   const skyY = useTransform(scrollY, [0, 1000], [0, -50]);
 
   const xpPercentage = (userStats.xp / userStats.xpToNext) * 100;
+
+  // Find the active character object
+  const selectedCharacter = characters.find(c => c.name === activeCharacter);
 
   // Parallax Background Component
   const ParallaxBackground = () => (
@@ -250,7 +253,7 @@ const Home = ({ user, onLogout }) => {
                 
                 {/* Character */}
                 <img 
-                  src={getCharacterSprite(activeCharacter, characterStats)} 
+                  src={getCharacterSprite(selectedCharacter, characterStats)} 
                   alt="Selected Character" 
                   className="h-60 w-auto relative z-10"
                   style={{ imageRendering: 'pixelated' }}
@@ -348,87 +351,6 @@ const Home = ({ user, onLogout }) => {
       className="relative z-10 px-8 py-16"
     >
       <div className="max-w-6xl mx-auto">
-        <motion.h2 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="text-4xl font-bold text-center text-white mb-12"
-          style={{ fontFamily: 'monospace', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
-        >
-          📊 YOUR ADVENTURE STATS 📊
-        </motion.h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          {[
-            { 
-              icon: <Heart className="h-8 w-8" />, 
-              label: 'STREAK', 
-              value: `${userStats.streak} days`, 
-              emoji: '🔥',
-              color: 'from-red-500 to-red-700',
-              border: 'border-red-800'
-            },
-            { 
-              icon: <Sword className="h-8 w-8" />, 
-              label: 'WORKOUTS', 
-              value: userStats.workoutsCompleted, 
-              emoji: '💪',
-              color: 'from-orange-500 to-orange-700',
-              border: 'border-orange-800'
-            }
-          ].map((stat, index) => (
-            <motion.div 
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="text-center"
-            >
-              <motion.div 
-                animate={{ 
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 5, -5, 0]
-                }}
-                transition={{ 
-                  duration: 2, 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
-                }}
-                className="text-8xl mb-4"
-              >
-                {stat.emoji}
-              </motion.div>
-              <div className="text-4xl font-bold text-white mb-2" style={{ fontFamily: 'monospace', textShadow: '2px 2px 4px rgba(0,0,0,0.8)', letterSpacing: '2px' }}>
-                {stat.label === 'STREAK' ? (
-                  <div className="text-center">
-                    <motion.div
-                      animate={{ 
-                        x: [-2, 2, -2, 2, -2, 2, -2, 2, 0],
-                        rotate: [-1, 1, -1, 1, -1, 1, -1, 1, 0]
-                      }}
-                      transition={{ 
-                        duration: 0.5,
-                        repeat: Infinity,
-                        repeatDelay: 3
-                      }}
-                      className="text-6xl mb-1"
-                    >
-                      {userStats.streak}
-                    </motion.div>
-                    <div className="text-2xl">days</div>
-                </div>
-                ) : (
-                  stat.value
-                )}
-              </div>
-              <div className="text-2xl text-gray-300 font-bold" style={{ fontFamily: 'monospace', textShadow: '1px 1px 2px rgba(0,0,0,0.8)', letterSpacing: '1px' }}>
-                {stat.label}
-              </div>
-            </motion.div>
-          ))}
-          </div>
-
         {/* GitHub-style Workout Calendar */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -447,24 +369,15 @@ const Home = ({ user, onLogout }) => {
                 const squares = [];
                 const today = new Date();
                 
-                // Generate workout days (simulate based on userStats.workoutsCompleted)
-                const workoutDays = new Set();
-                const totalWorkouts = userStats.workoutsCompleted;
-                const daysInYear = 365;
-                
-                // Distribute workouts across the year (more recent = higher chance)
-                for (let i = 0; i < totalWorkouts; i++) {
-                  const randomDay = Math.floor(Math.random() * daysInYear);
-                  const date = new Date(today);
-                  date.setDate(date.getDate() - randomDay);
-                  workoutDays.add(date.toDateString());
-                }
+                // Get actual workout dates from context
+                const workoutDates = workouts.map(workout => workout.date);
                 
                 // Create calendar squares for the last 365 days
                 for (let i = 364; i >= 0; i--) {
                   const date = new Date(today);
                   date.setDate(date.getDate() - i);
-                  const isWorkoutDay = workoutDays.has(date.toDateString());
+                  const dateString = date.toISOString().split('T')[0];
+                  const isWorkoutDay = workoutDates.includes(dateString);
                   
                   squares.push(
                     <motion.div
@@ -490,7 +403,7 @@ const Home = ({ user, onLogout }) => {
             Each square represents a day. Green squares = workout days!
           </p>
         </motion.div>
-        </div>
+      </div>
     </motion.section>
   );
 
@@ -511,8 +424,13 @@ const Home = ({ user, onLogout }) => {
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-8"
           >
-            <h3 className="text-3xl font-bold text-yellow-300 mb-2" style={{ fontFamily: 'monospace' }}>
-              🗞️ QUEST BOARD 🗞️
+            <h3 className="text-6xl font-bold mb-4" style={{ 
+              fontFamily: 'VT323, monospace', 
+              textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+              letterSpacing: '2px',
+              color: '#fcd34d'
+            }}>
+              QUEST BOARD
             </h3>
             <p className="text-gray-300 text-lg">Choose your next adventure!</p>
           </motion.div>
