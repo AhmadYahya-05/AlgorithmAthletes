@@ -46,6 +46,17 @@ app.use('/api/users', userRoutes);
 app.use('/api/video', videoRoutes);
 app.use('/api/profile', profileRoutes);
 
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  const buildPath = path.resolve(__dirname, '..', 'frontend', 'dist');
+  app.use(express.static(buildPath));
+
+  // For any other request, serve the index.html file
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(buildPath, 'index.html'));
+  });
+}
+
 // Health check route
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', timestamp: new Date().toISOString() });
