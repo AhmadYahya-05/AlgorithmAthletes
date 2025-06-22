@@ -43,7 +43,31 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin'],
     default: 'user'
-  }
+  },
+  stats: {
+    level: {
+      type: Number,
+      default: 1
+    },
+    xp: {
+      type: Number,
+      default: 0
+    }
+  },
+  character: {
+    class: {
+      type: String,
+      default: 'Warrior'
+    },
+    gender: {
+      type: String,
+      default: 'male'
+    }
+  },
+  friends: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }]
 }, {
   timestamps: true
 });

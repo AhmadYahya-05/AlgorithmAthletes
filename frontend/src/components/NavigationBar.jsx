@@ -25,12 +25,16 @@ const NavigationBar = ({ user, onLogout }) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {['About', 'Features', 'Community', 'My Profile'].map((item) => (
+            {['About', 'Features', 'Community', 'Friends', 'Workout Tracker', 'My Profile'].map((item) => (
               <motion.button
                 key={item}
                 onClick={() => {
                   if (item === 'My Profile') {
                     window.location.href = '/profile';
+                  } else if (item === 'Friends') {
+                    window.location.href = '/friends';
+                  } else if (item === 'Workout Tracker') {
+                    window.location.href = '/tracker';
                   }
                 }}
                 whileHover={{ scale: 1.1, y: -2, color: '#fcd34d' }} // yellow-300

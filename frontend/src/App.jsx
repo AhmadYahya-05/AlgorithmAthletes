@@ -9,6 +9,8 @@ import AIChatbotPage from './pages/AIChatbotPage';
 import AIFormChecker from './pages/AIFormChecker';
 import Character from './pages/Character';
 import ProfilePage from './pages/ProfilePage';
+import FriendsPage from './pages/FriendsPage';
+import WorkoutTracker from './pages/WorkoutTracker';
 import { API_ENDPOINTS } from './config/api.js';
 import './App.css';
 import { UserProvider } from './context/UserContext.jsx';
@@ -149,6 +151,22 @@ function App() {
               element={
                 isAuthenticated ? 
                   <ProfilePage user={user} onLogout={logout} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
+            <Route 
+              path="/friends" 
+              element={
+                isAuthenticated ? 
+                  <FriendsPage user={user} onLogout={logout} /> : 
+                  <Navigate to="/login" replace />
+              } 
+            />
+            <Route 
+              path="/tracker" 
+              element={
+                isAuthenticated ? 
+                  <WorkoutTracker user={user} onLogout={logout} /> : 
                   <Navigate to="/login" replace />
               } 
             />
