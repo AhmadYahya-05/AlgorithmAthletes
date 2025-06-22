@@ -1,37 +1,95 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { UserContext } from '../context/UserContext';
 import { ArrowLeft, Heart, Zap, Shield, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { characters, getCharacterSprite } from '../data/characters';
 
-const StatBar = ({ value, maxValue = 40, color, icon, label }) => (
-  <div className="mb-5">
-    <div className="flex items-center justify-between mb-2 text-white">
-      <div className="flex items-center">
-        {icon}
-        <span className="font-bold ml-3 text-base" style={{ fontFamily: 'monospace' }}>{label}</span>
+const StatBar = ({ value, maxValue = 40, color, icon, label, onValueChange }) => {
+  const [isDragging, setIsDragging] = useState(false);
+  const [localValue, setLocalValue] = useState(value);
+
+  const handleSliderChange = (e) => {
+    const newValue = parseInt(e.target.value);
+    setLocalValue(newValue);
+    if (onValueChange) {
+      onValueChange(newValue);
+    }
+  };
+
+  const handleMouseDown = () => setIsDragging(true);
+  const handleMouseUp = () => setIsDragging(false);
+
+  return (
+    <div className="mb-5">
+      <div className="flex items-center justify-between mb-2 text-white">
+        <div className="flex items-center">
+          {icon}
+          <span className="font-bold ml-3 text-base" style={{ fontFamily: 'monospace' }}>{label}</span>
+        </div>
+        <span className="font-bold text-sm">{localValue} / {maxValue}</span>
       </div>
-      <span className="font-bold text-sm">{value} / {maxValue}</span>
+      <div className="relative w-full h-6 bg-gray-800 rounded-full border-2 border-gray-600 overflow-hidden">
+        {/* Background fill */}
+        <motion.div
+          className={`h-full ${color}`}
+          initial={{ width: 0 }}
+          animate={{ width: `${(localValue / maxValue) * 100}%` }}
+          transition={{ duration: isDragging ? 0 : 0.3, ease: "easeOut" }}
+        />
+        
+        {/* Slider input */}
+        <input
+          type="range"
+          min="0"
+          max={maxValue}
+          value={localValue}
+          onChange={handleSliderChange}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchEnd={handleMouseUp}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          style={{ 
+            background: 'transparent',
+            WebkitAppearance: 'none',
+            appearance: 'none'
+          }}
+        />
+        
+        {/* Slider thumb */}
+        <motion.div
+          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full border-2 border-gray-800 shadow-lg"
+          style={{ 
+            left: `${(localValue / maxValue) * 100}%`,
+            transform: 'translate(-50%, -50%)'
+          }}
+          animate={{
+            scale: isDragging ? 1.2 : 1,
+            boxShadow: isDragging ? '0 0 10px rgba(255,255,255,0.5)' : '0 2px 4px rgba(0,0,0,0.3)'
+          }}
+          transition={{ duration: 0.2 }}
+        />
+      </div>
     </div>
-    <div className="w-full h-6 bg-gray-800 rounded-full border-2 border-gray-600 overflow-hidden">
-      <motion.div
-        className={`h-full ${color}`}
-        initial={{ width: 0 }}
-        animate={{ width: `${(value / maxValue) * 100}%` }}
-        transition={{ duration: 1, ease: "easeOut" }}
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 const Character = ({ onNavigateBack }) => {
   const { 
     activeCharacter, 
     setActiveCharacter, 
-    characterStats 
+    characterStats,
+    setCharacterStats
   } = useContext(UserContext);
 
   const selectedCharacter = characters.find(c => c.name === activeCharacter);
+
+  const updateStat = (statName, newValue) => {
+    setCharacterStats(prev => ({
+      ...prev,
+      [statName]: newValue
+    }));
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{
@@ -162,11 +220,21 @@ const Character = ({ onNavigateBack }) => {
                   <div className="flex flex-col justify-top">
                     <h3 className="text-5xl font-bold text-center text-white mb-4" style={{ fontFamily: 'monospace' }}>STATS</h3>
                     <div className="space-y-4">
-                      <StatBar value={characterStats.health} color="bg-red-500" icon={<Heart className="h-5 w-5" />} label="HEALTH" />
-                      <StatBar value={characterStats.armStrength} color="bg-orange-500" icon={<Zap className="h-5 w-5" />} label="ARM STRENGTH" />
-                      <StatBar value={characterStats.legStrength} color="bg-green-500" icon={<Shield className="h-5 w-5" />} label="LEG STRENGTH" />
-                      <StatBar value={characterStats.backStrength} color="bg-cyan-500" icon={<Shield className="h-5 w-5" />} label="BACK STRENGTH" />
-                      <StatBar value={characterStats.stamina} color="bg-blue-500" icon={<Activity className="h-5 w-5" />} label="STAMINA" />
+                      <StatBar value={characterStats.health} color="bg-red-500" icon={<Heart className="h-5 w-5" />} label="HEALTH" onValueChange={(newValue) => {
+                        updateStat('health', newValue);
+                      }} />
+                      <StatBar value={characterStats.armStrength} color="bg-orange-500" icon={<Zap className="h-5 w-5" />} label="ARM STRENGTH" onValueChange={(newValue) => {
+                        updateStat('armStrength', newValue);
+                      }} />
+                      <StatBar value={characterStats.legStrength} color="bg-green-500" icon={<Shield className="h-5 w-5" />} label="LEG STRENGTH" onValueChange={(newValue) => {
+                        updateStat('legStrength', newValue);
+                      }} />
+                      <StatBar value={characterStats.backStrength} color="bg-cyan-500" icon={<Shield className="h-5 w-5" />} label="BACK STRENGTH" onValueChange={(newValue) => {
+                        updateStat('backStrength', newValue);
+                      }} />
+                      <StatBar value={characterStats.stamina} color="bg-blue-500" icon={<Activity className="h-5 w-5" />} label="STAMINA" onValueChange={(newValue) => {
+                        updateStat('stamina', newValue);
+                      }} />
                     </div>
                     
                     <motion.button

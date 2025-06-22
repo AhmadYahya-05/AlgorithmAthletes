@@ -4,7 +4,7 @@ export const characters = [
     name: "Iron Fist",
     class: "Fighting",
     gender: "male",
-    description: "A powerful warrior with unmatched arm strength. Focuses on upper body power and resilience.",
+    description: "A powerful warrior with unmatched arm strength.",
     sprites: {
       level1: "/Msprite1.png",
       level2: "/Msprite2.png",
@@ -19,7 +19,7 @@ export const characters = [
     name: "Swift Runner",
     class: "Speed",
     gender: "female",
-    description: "A lightning-fast athlete with incredible stamina. Excels at speed and endurance challenges.",
+    description: "A lightning-fast athlete with incredible stamina.",
     sprites: {
       level1: "/Fsprite1.png",
       level2: "/Fsprite2.png",
@@ -60,7 +60,7 @@ export const characters = [
     name: "Gorilla",
     class: "Strength",
     gender: "male",
-    description: "A mighty beast with incredible strength and raw power. Dominates in close combat.",
+    description: "A mighty beast with incredible strength and raw power.",
     sprites: {
       level1: "/gorilla.png",
     },
@@ -86,7 +86,7 @@ export const characters = [
     name: "Rhino",
     class: "Tank",
     gender: "male",
-    description: "A massive and unstoppable force with incredible durability and charging power.",
+    description: "A massive and unstoppable force!",
     sprites: {
       level1: "/rhino.png",
     },
