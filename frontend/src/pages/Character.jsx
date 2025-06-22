@@ -62,7 +62,7 @@ const Character = ({ onNavigateBack }) => {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-1 bg-gray-900 bg-opacity-70 rounded-2xl p-6 border-4 border-gray-700 h-fit"
           >
-            <h2 className="text-xl font-bold text-center text-white mb-6" style={{ fontFamily: 'monospace' }}>SELECT CHARACTER</h2>
+            <h2 className="text-xl font-bold text-center text-white mb-6" style={{ fontFamily: 'monospace' }}>CHOOSE YOUR CHARACTER</h2>
             <div className="grid grid-cols-2 gap-3">
               {characters.map(char => (
                 <motion.div
