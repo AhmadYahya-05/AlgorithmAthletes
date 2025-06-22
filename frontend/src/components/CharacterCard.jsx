@@ -5,6 +5,7 @@ import { UserContext } from '../context/UserContext';
 const CharacterCard = ({ 
   name, 
   emoji, 
+  image,
   description, 
   route, 
   bgColor = "from-blue-400 to-blue-600",
@@ -17,10 +18,8 @@ const CharacterCard = ({
 
   const handleClick = () => {
     // Add XP based on the quest type
-    if (name === "NUTRITIONIST") {
-      addXP(25);
-    } else if (name === "AI COACH") {
-      addXP(30);
+    if (name === "YOUR TEAM") {
+      addXP(30); // Combined XP for team access
     } else if (name === "AI FORM CHECKER") {
       addXP(40);
     }
@@ -32,23 +31,32 @@ const CharacterCard = ({
 
   return (
     <button 
-      className={`bg-gradient-to-b ${bgColor} p-3 rounded-lg border-2 ${borderColor} shadow-lg hover:scale-105 transform transition-all duration-200 group w-full aspect-square`}
+      className={`bg-gradient-to-b ${bgColor} p-2 rounded-lg border-2 ${borderColor} shadow-lg hover:scale-105 transform transition-all duration-200 group w-full aspect-square`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       onClick={handleClick}
     >
       <div className="text-center h-full flex flex-col justify-center">
         <div 
-          className={`text-2xl mb-2 transition-all duration-300 ${
+          className={`text-xl mb-1 transition-all duration-300 ${
             isHovering ? 'animate-bounce transform scale-110' : ''
           }`}
         >
-          {emoji}
+          {image ? (
+            <img 
+              src={image} 
+              alt={name}
+              className="w-36 h-18 mx-auto"
+              style={{ imageRendering: 'pixelated' }}
+            />
+          ) : (
+            emoji
+          )}
         </div>
-        <h4 className="font-bold text-white text-lg mb-1" style={{ fontFamily: 'monospace' }}>
+        <h4 className="font-bold text-white text-base mb-1" style={{ fontFamily: 'monospace' }}>
           {name}
         </h4>
-        <p className={`${textColor} text-base leading-tight`}>{description}</p>
+        <p className={`${textColor} text-sm leading-tight`}>{description}</p>
       </div>
     </button>
   );

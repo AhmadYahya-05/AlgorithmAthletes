@@ -568,10 +568,11 @@ const Home = ({ user, onLogout }) => {
             <p className="text-gray-300 text-lg">Choose your next adventure!</p>
           </motion.div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
             <CharacterCard 
               name="YOUR TEAM"
               emoji="👥"
+              image="/aiheads.png"
               description="Get personalized advice from your AI coaches"
               route="/ai-coach"
               bgColor="from-green-400 to-green-600"
@@ -592,6 +593,7 @@ const Home = ({ user, onLogout }) => {
             <CharacterCard 
               name="CHARACTER SELECT & STATS"
               emoji="🎮"
+              image="/chars.png"
               description="Select your character and view your stats"
               route="/character"
               bgColor="from-indigo-400 to-indigo-600"
