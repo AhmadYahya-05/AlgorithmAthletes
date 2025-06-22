@@ -233,8 +233,8 @@ const NutritionistPage = ({ user, onLogout }) => {
                 <div className="mt-6">
                   <CharacterToggle activeCharacter="nutritionist" />
                 </div>
-              </div>
-            </div>
+          </div>
+        </div>
 
             {/* Chat Section */}
             <div className="lg:col-span-2 bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl flex flex-col" style={{ backdropFilter: 'blur(10px)', height: '70vh' }}>
@@ -307,8 +307,8 @@ const NutritionistPage = ({ user, onLogout }) => {
                   >
                     <Send className="text-white" />
                   </button>
-                </div>
-              </div>
+            </div>
+            </div>
             </div>
           </div>
         </motion.div>
@@ -317,4 +317,4 @@ const NutritionistPage = ({ user, onLogout }) => {
   );
 };
 
-export default NutritionistPage;
+export default NutritionistPage; 

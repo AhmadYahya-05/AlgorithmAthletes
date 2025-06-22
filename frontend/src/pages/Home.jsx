@@ -182,47 +182,130 @@ const Home = ({ user, onLogout }) => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.8, duration: 0.6 }}
-          className="relative inline-block bg-gradient-to-b from-purple-600 to-indigo-700 rounded-2xl p-6 border-4 border-white shadow-2xl mb-12"
-          style={{
-            boxShadow: '0 8px 16px rgba(0,0,0,0.4), inset 0 2px 8px rgba(255,255,255,0.3)'
-          }}
+          className="relative inline-block mb-12"
           whileHover={{ scale: 1.05, y: -5 }}
           onClick={() => navigate('/character')}
         >
-            <div className="mb-4">
-              <div className="bg-black bg-opacity-70 px-4 py-2 rounded-lg border-2 border-yellow-400 inline-block">
-              <span className="text-yellow-300 font-bold text-lg" style={{ fontFamily: 'monospace' }}>
-                  @{user?.username || `${user?.firstName?.toLowerCase()}`}
-                </span>
+          {/* Pedestal and Character Container */}
+          <div className="relative">
+            {/* Pedestal Background */}
+            <motion.div 
+              //animate={{ 
+              //  y: [0, -5, 0],
+              //}}
+              //transition={{ 
+              //  duration: 6, 
+              //  repeat: Infinity, 
+              //  ease: "easeInOut" 
+              //}}
+              className="relative z-0 mt-36"
+            >
+              <img 
+                src="/pedestal.png" 
+                alt="Pedestal" 
+                className="w-[576px] h-[384px] object-contain mx-auto"
+                style={{ imageRendering: 'pixelated' }}
+              />
+            </motion.div>
+
+            {/* Character on Pedestal */}
+            <motion.div 
+              animate={{ 
+                y: [0, -15, 0],
+                rotateY: [0, 5, -5, 0]
+              }}
+              transition={{ 
+                duration: 4, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+              className="absolute inset-0 flex justify-center items-top -mt-36 z-10"
+              style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.5))' }}
+            >
+              {/* Super Saiyan Aura */}
+              <div className="relative">
+                {/* Outer Glow */}
+                <motion.div
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.3, 0.6, 0.3]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="absolute inset-0 w-48 h-48 rounded-full bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 blur-xl opacity-30"
+                  style={{ filter: 'blur(20px)', marginLeft: '-35px' }}
+                />
+                
+                {/* Character */}
+                <img 
+                  src={getCharacterSprite(activeCharacter, characterStats)} 
+                  alt="Selected Character" 
+                  className="h-60 w-auto relative z-10"
+                  style={{ imageRendering: 'pixelated' }}
+                />
               </div>
+            </motion.div>
+          </div>
+
+          {/* Username Display - Moved below pedestal */}
+          <div className="mt-4 text-center">
+            <div className="bg-black bg-opacity-70 px-4 py-2 rounded-lg border-2 border-yellow-400 inline-block">
+              <span className="text-yellow-300 font-bold text-lg" style={{ fontFamily: 'monospace' }}>
+                @{user?.username || `${user?.firstName?.toLowerCase()}`}
+              </span>
             </div>
+          </div>
 
-          <motion.div 
-            animate={{ 
-              y: [0, -10, 0],
-              rotateY: [0, 5, -5, 0]
-            }}
-            transition={{ 
-              duration: 4, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-            className="text-9xl mb-4 h-32 flex justify-center items-center"
-                style={{ filter: 'drop-shadow(4px 4px 8px rgba(0,0,0,0.5))' }}
-              >
-            <img 
-              src={getCharacterSprite(activeCharacter, characterStats)} 
-              alt="Selected Character" 
-              className="max-h-full"
-              style={{ imageRendering: 'pixelated' }}
-            />
-          </motion.div>
-
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-full w-12 h-12 flex items-center justify-center border-3 border-yellow-400 font-bold text-lg shadow-lg">
-                {userStats.level}
-            </div>
-
-            <div className="mt-4">
+            <div className="mt-6">
+              <div className="flex items-center justify-center gap-4 mb-2">
+                {/* Level Bubble - Enhanced */}
+                <motion.div 
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  className="relative"
+                >
+                  <div className="bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 text-white rounded-full w-14 h-14 flex items-center justify-center border-3 border-yellow-400 font-bold text-lg shadow-lg relative overflow-hidden">
+                    {/* Shimmer Effect */}
+                    <motion.div
+                      animate={{
+                        x: [-20, 20],
+                        opacity: [0, 0.5, 0]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent transform -skew-x-12"
+                    />
+                    {/* Level Number */}
+                    <span className="relative z-10 text-xl font-bold" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+                      {userStats.level}
+                    </span>
+                  </div>
+                  {/* Glow Effect */}
+                  <motion.div
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.3, 0.6, 0.3]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    className="absolute inset-0 bg-purple-400 rounded-full blur-md -z-10"
+                  />
+                </motion.div>
+                
+                {/* Level Label */}
+                <div className="text-xs font-bold text-white" style={{ fontFamily: 'monospace' }}>
+                  LEVEL
+                </div>
+              </div>
+              
               <div className="text-xs font-bold text-white mb-1" style={{ fontFamily: 'monospace' }}>
                 XP: {userStats.xp} / {userStats.xpToNext}
               </div>
