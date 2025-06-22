@@ -17,6 +17,14 @@ export const UserProvider = ({ children }) => {
     gender: 'male'
   });
 
+  const [characterStats, setCharacterStats] = useState({
+    health: 10,
+    armStrength: 10,
+    legStrength: 10,
+    backStrength: 10,
+    stamina: 10,
+  });
+
   const [profileData, setProfileData] = useState({
     chronologicalAge: '',
     height: '',
@@ -68,10 +76,13 @@ export const UserProvider = ({ children }) => {
   const value = useMemo(() => ({
     userStats,
     activeCharacter,
+    setActiveCharacter,
+    characterStats,
+    setCharacterStats,
     fetchUserStats, // Expose fetch function
     profileData,
     updateProfileData,
-  }), [userStats, activeCharacter, fetchUserStats, profileData]);
+  }), [userStats, activeCharacter, characterStats, fetchUserStats, profileData]);
 
   return (
     <UserContext.Provider value={value}>
