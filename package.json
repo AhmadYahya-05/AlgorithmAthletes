@@ -7,7 +7,7 @@
     "install:backend": "npm install --prefix backend",
     "install:frontend": "npm install --prefix frontend",
     "install": "npm run install:backend && npm run install:frontend",
-    "build": "cd frontend && npm install && npm run build",
+    "build": "npm run install:frontend && cd frontend && npm run build",
     "start": "cd backend && npm start",
     "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
   },
