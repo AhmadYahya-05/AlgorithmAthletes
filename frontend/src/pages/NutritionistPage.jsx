@@ -220,14 +220,10 @@ const NutritionistPage = ({ user, onLogout }) => {
                 </div>
 
                 {isBubbleVisible && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-white border-2 border-gray-300 rounded-lg p-3 shadow-lg"
-                  >
-                    <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-white"></div>
-                    <p className="text-center text-gray-800 text-sm">{bubbleText}</p>
-                  </motion.div>
+                  <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-64 bg-white border-2 border-gray-300 rounded-lg p-3 shadow-lg animate-fade-in-down">
+                    <div className="absolute left-1/2 -translate-x-1/2 -top-[10px] w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-white"></div>
+                    <p className="text-center text-gray-800 text-sm font-semibold">{bubbleText}</p>
+                  </div>
                 )}
 
                 <div className="mt-6">
