@@ -1,5 +1,5 @@
 import { useState, useEffect, memo, useContext } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Calendar, Clock, Target, Trophy, BarChart3 } from 'lucide-react';
 import NavigationBar from '../components/NavigationBar';
 import { UserContext } from '../context/UserContext';
@@ -108,8 +108,126 @@ const AddWorkoutForm = memo(({ newWorkout, setNewWorkout, handleAddWorkout, setS
   </motion.div>
 ));
 
+// Level Up Animation Component
+const LevelUpAnimation = ({ isLevelingUp, userStats }) => (
+  <AnimatePresence>
+    {isLevelingUp && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+      >
+        {/* Background overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        
+        {/* Level up content */}
+        <motion.div
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          exit={{ scale: 0, rotate: 180 }}
+          transition={{ 
+            duration: 0.8,
+            ease: "easeOut"
+          }}
+          className="relative z-10 text-center"
+        >
+          {/* Glowing background */}
+          <motion.div
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.3, 0.8, 0.3]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-400 rounded-full blur-2xl"
+          />
+          
+          {/* Main content */}
+          <div className="relative bg-gradient-to-br from-yellow-400 to-orange-600 p-8 rounded-3xl border-4 border-yellow-300 shadow-2xl">
+            {/* Sparkles */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ 
+                  opacity: [0, 1, 0],
+                  scale: [0, 1, 0],
+                  x: [0, (Math.random() - 0.5) * 200],
+                  y: [0, (Math.random() - 0.5) * 200]
+                }}
+                transition={{
+                  duration: 1.5,
+                  delay: i * 0.1,
+                  repeat: Infinity,
+                  repeatDelay: 1
+                }}
+                className="absolute text-2xl"
+                style={{
+                  left: `${50 + (Math.random() - 0.5) * 100}%`,
+                  top: `${50 + (Math.random() - 0.5) * 100}%`
+                }}
+              >
+                ⭐
+              </motion.div>
+            ))}
+            
+            <motion.div
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{ 
+                duration: 1,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="text-6xl mb-4"
+            >
+              🎉
+            </motion.div>
+            
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-3xl font-bold text-white mb-2"
+              style={{ fontFamily: 'monospace', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}
+            >
+              LEVEL UP!
+            </motion.h2>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="text-2xl font-bold text-yellow-100"
+              style={{ fontFamily: 'monospace', textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}
+            >
+              You are now Level {userStats.level}!
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="text-lg text-yellow-200 mt-2"
+              style={{ fontFamily: 'monospace' }}
+            >
+              Keep up the great work! 💪
+            </motion.div>
+          </div>
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
 const WorkoutTracker = ({ user, onLogout }) => {
-  const { workouts, addWorkout, deleteWorkout } = useContext(UserContext);
+  const { workouts, addWorkout, deleteWorkout, isLevelingUp, userStats } = useContext(UserContext);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newWorkout, setNewWorkout] = useState({
     name: '',
@@ -326,6 +444,8 @@ const WorkoutTracker = ({ user, onLogout }) => {
           </motion.div>
         </motion.div>
       </main>
+
+      <LevelUpAnimation isLevelingUp={isLevelingUp} userStats={userStats} />
     </div>
   );
 };

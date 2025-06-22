@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 const CharacterCard = ({ 
   name, 
@@ -12,8 +13,20 @@ const CharacterCard = ({
 }) => {
   const [isHovering, setIsHovering] = useState(false);
   const navigate = useNavigate();
+  const { addXP } = useContext(UserContext);
 
   const handleClick = () => {
+    // Add XP based on the quest type
+    if (name === "NUTRITIONIST") {
+      addXP(25);
+    } else if (name === "AI COACH") {
+      addXP(30);
+    } else if (name === "AI FORM CHECKER") {
+      addXP(40);
+    }
+    // Character select doesn't give XP
+    
+    // Navigate to the route
     navigate(route);
   };
 
