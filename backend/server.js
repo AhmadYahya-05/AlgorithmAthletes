@@ -15,8 +15,6 @@ import profileRoutes from './src/routes/profileRoutes.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -45,6 +43,17 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/video', videoRoutes);
 app.use('/api/profile', profileRoutes);
+
+// Serve frontend in production
+if (process.env.NODE_ENV === 'production') {
+  const buildPath = path.resolve(__dirname, '..', 'frontend', 'dist');
+  app.use(express.static(buildPath));
+
+  // For any other request, serve the index.html file
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(buildPath, 'index.html'));
+  });
+}
 
 // Health check route
 app.get('/api/health', (req, res) => {

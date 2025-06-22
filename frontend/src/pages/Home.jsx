@@ -169,6 +169,12 @@ const Home = ({ user, onLogout }) => {
               y: -5
             }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              document.getElementById('quest-board').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }}
             className="bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 px-8 py-4 rounded-xl font-bold text-lg border-4 border-yellow-600 shadow-lg"
             style={{ fontFamily: 'monospace' }}
           >
@@ -491,6 +497,7 @@ const Home = ({ user, onLogout }) => {
   // Quest Board Component
   const QuestBoard = () => (
     <motion.section 
+      id="quest-board"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
