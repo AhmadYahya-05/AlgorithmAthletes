@@ -155,7 +155,7 @@ const Home = ({ user, onLogout }) => {
           const size = Math.random() * 3 + 1; 
           const isGlowing = Math.random() > 0.5;
 
-          return (
+  return (
             <motion.div
               key={`star-${i}`}
               className="absolute bg-white rounded-full"
@@ -536,7 +536,7 @@ const Home = ({ user, onLogout }) => {
             Each square represents a day. Green squares = workout days!
           </p>
         </motion.div>
-      </div>
+        </div>
     </motion.section>
   );
 
@@ -551,55 +551,72 @@ const Home = ({ user, onLogout }) => {
       className="relative z-10 px-8 py-16"
     >
       <div className="max-w-6xl mx-auto">
-        <div className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-8" style={{ backdropFilter: 'blur(10px)' }}>
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-center mb-8"
-          >
-            <h3 className="text-6xl font-bold mb-4" style={{ 
-              fontFamily: 'VT323, monospace', 
-              textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-              letterSpacing: '2px',
-              color: '#fcd34d'
-            }}>
-              QUEST BOARD
-            </h3>
-            <p className="text-gray-300 text-lg">Choose your next adventure!</p>
-          </motion.div>
+        <div 
+          className="bg-gray-900 bg-opacity-70 rounded-2xl border-2 border-gray-700 shadow-2xl p-8 relative overflow-hidden" 
+          style={{ 
+            backdropFilter: 'blur(10px)',
+            backgroundImage: 'url(/taskboard.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          {/* Overlay to ensure text readability */}
+          <div className="absolute inset-0 bg-gray-900 bg-opacity-50 rounded-2xl"></div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-            <CharacterCard 
-              name="YOUR TEAM"
-              emoji="👥"
-              image="/aiheads.png"
-              description="Get personalized advice from your AI coaches"
-              route="/ai-coach"
-              bgColor="from-green-400 to-green-600"
-              borderColor="border-yellow-400"
-              textColor="text-green-100"
-            />
+          {/* Content */}
+          <div className="relative z-10">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="text-center mb-8"
+            >
+              <h3 className="text-6xl font-bold mb-4" style={{ 
+                fontFamily: 'VT323, monospace', 
+                textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+                letterSpacing: '2px',
+                color: '#fcd34d'
+              }}>
+                QUEST BOARD
+              </h3>
+              <p className="text-gray-300 text-lg">Choose your next adventure!</p>
+            </motion.div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+              <CharacterCard 
+                name="YOUR TEAM"
+                emoji="👥"
+                image="/aiheads.png"
+                description="Get personalized advice from your AI coaches"
+                route="/ai-coach"
+                bgColor="from-green-400 to-green-600"
+                borderColor="border-yellow-400"
+                textColor="text-green-100"
+              />
 
-            <CharacterCard 
-              name="AI FORM CHECKER"
-              emoji="📹"
-              description="Real-time form analysis with AI"
-              route="/ai-form-checker"
-              bgColor="from-purple-400 to-purple-600"
-              borderColor="border-yellow-400"
-              textColor="text-purple-100"
-            />
+              <CharacterCard 
+                name="AI FORM CHECKER"
+                emoji="📹"
+                image="/rawbotthumb.png"
+                imageSize="w-24 h-20"
+                description="Real-time form analysis with AI"
+                route="/ai-form-checker"
+                bgColor="from-purple-400 to-purple-600"
+                borderColor="border-yellow-400"
+                textColor="text-purple-100"
+              />
 
-            <CharacterCard 
-              name="CHARACTER SELECT & STATS"
-              emoji="🎮"
-              image="/chars.png"
-              description="Select your character and view your stats"
-              route="/character"
-              bgColor="from-indigo-400 to-indigo-600"
-              borderColor="border-yellow-400"
-              textColor="text-indigo-100"
-            />
+              <CharacterCard 
+                name="CHARACTER SELECT & STATS"
+                emoji="🎮"
+                image="/chars.png"
+                description="Select your character and view your stats"
+                route="/character"
+                bgColor="from-indigo-400 to-indigo-600"
+                borderColor="border-yellow-400"
+                textColor="text-indigo-100"
+              />
+            </div>
           </div>
         </div>
       </div>

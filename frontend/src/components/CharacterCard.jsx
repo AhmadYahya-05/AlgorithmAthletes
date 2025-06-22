@@ -6,6 +6,7 @@ const CharacterCard = ({
   name, 
   emoji, 
   image,
+  imageSize = "w-36 h-18",
   description, 
   route, 
   bgColor = "from-blue-400 to-blue-600",
@@ -46,7 +47,7 @@ const CharacterCard = ({
             <img 
               src={image} 
               alt={name}
-              className="w-36 h-18 mx-auto"
+              className={`${imageSize} mx-auto`}
               style={{ imageRendering: 'pixelated' }}
             />
           ) : (
