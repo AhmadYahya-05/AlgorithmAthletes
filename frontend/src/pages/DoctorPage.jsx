@@ -104,7 +104,7 @@ const DoctorPage = ({ user, onLogout }) => {
       You must decline any medical diagnosis requests and refer users to their primary care physician for medical concerns.
       Always maintain a professional, caring, and evidence-based approach.
       Never break character. Always stay focused on nutritional supplementation and health optimization.
-      Keep your responses informative but accessible.
+      Keep your responses informative but accessible, and short unless the user asks for more information.
 
       Here is the user's profile information. Use it to inform your supplement recommendations:
       - Age: ${profileData.chronologicalAge || 'Not provided'}
