@@ -9,23 +9,25 @@ const NavigationBar = ({ user, onLogout }) => {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-20 bg-gray-900 bg-opacity-80 border-b border-gray-700 shadow-lg"
-      style={{ backdropFilter: 'blur(10px)', fontFamily: 'monospace' }}
+      className="sticky top-0 z-20 bg-gray-900 bg-opacity-80 border-b border-gray-700"
+      style={{ 
+        backdropFilter: 'blur(10px)', 
+        fontFamily: 'monospace',
+        boxShadow: '0px 5px 20px rgba(252, 211, 77, 0.5)' // Persistent yellow-300 glow
+      }}
     >
       <div className="w-full px-8">
         <div className="flex justify-between items-center h-16">
           <a href="/" className="flex items-center cursor-pointer">
             <motion.div whileHover={{ scale: 1.05, rotate: 5 }} className="flex items-center">
                 <div className="text-2xl mr-3 animate-pulse">⚔️</div>
-                <span className="text-xl font-bold text-yellow-300">
-                FITNESS QUEST
-                </span>
+                <span className="text-2xl font-bold text-yellow-300" style={{ fontFamily: 'VT323, monospace' }}>FITQUEST</span>
             </motion.div>
           </a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {['About Us', 'Friends', 'Workout Tracker', 'My Profile'].map((item) => (
+            {['About Us', 'Friends', 'Workout Tracker', 'Coach', 'My Profile'].map((item) => (
               <motion.button
                 key={item}
                 onClick={() => {
@@ -37,11 +39,13 @@ const NavigationBar = ({ user, onLogout }) => {
                     window.location.href = '/tracker';
                   } else if (item === 'About Us') {
                     window.location.href = '/about';
+                  } else if (item === 'Coach') {
+                    window.location.href = '/ai-coach';
                   }
                 }}
-                whileHover={{ scale: 1.1, y: -2, color: '#fcd34d' }} // yellow-300
+                whileHover={{ scale: 1.05, backgroundColor: 'rgba(252, 211, 77, 0.1)' }}
                 whileTap={{ scale: 0.95 }}
-                className="text-gray-300 font-semibold transition-colors"
+                className="bg-black bg-opacity-30 px-4 py-2 rounded-lg border border-yellow-400 text-yellow-100 font-semibold"
               >
                 {item}
               </motion.button>

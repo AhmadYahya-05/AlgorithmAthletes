@@ -2,7 +2,7 @@ import { LogOut, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const Header = ({ user, onLogout, title = "FITNESS QUEST", onNavigateBack }) => {
+const Header = ({ user, onLogout, title = "FITQUEST", onNavigateBack }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
