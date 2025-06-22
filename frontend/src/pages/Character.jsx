@@ -79,10 +79,10 @@ const Character = ({ onNavigateBack }) => {
                   }}
                 >
                   <div className="flex items-center space-x-4">
-                    <img src={getCharacterSprite(char.name, characterStats)} alt={char.name} className="w-16 h-16 bg-black bg-opacity-30 rounded-lg p-1"/>
+                    <img src={getCharacterSprite(char, characterStats)} alt={char.name} className="w-16 h-16 bg-black bg-opacity-30 rounded-lg p-1"/>
                     <div>
                       <h3 className="text-lg font-bold text-white">{char.name}</h3>
-                      <p className="text-xs text-gray-200">{char.type} Class</p>
+                      <p className="text-xs text-gray-200">{char.class} Class</p>
                     </div>
                   </div>
                 </motion.div>
@@ -109,14 +109,20 @@ const Character = ({ onNavigateBack }) => {
                   {/* Sprite and Description */}
                   <div className="text-center">
                     <motion.img 
-                      key={getCharacterSprite(selectedCharacter.name, characterStats)}
-                      src={getCharacterSprite(selectedCharacter.name, characterStats)} 
+                      key={getCharacterSprite(selectedCharacter, characterStats)}
+                      src={getCharacterSprite(selectedCharacter, characterStats)} 
                       alt={selectedCharacter.name}
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                       className="w-full max-w-xs mx-auto mb-4"
-                      style={{ imageRendering: 'pixelated', filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.2))' }}
+                      style={{ 
+                        imageRendering: 'pixelated', 
+                        filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.2))',
+                        width: '320px',
+                        height: '620px',
+                        objectFit: 'contain'
+                      }}
                     />
                     <h2 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'monospace' }}>{selectedCharacter.name}</h2>
                     <p className="text-gray-300 text-sm px-4">{selectedCharacter.description}</p>

@@ -29,50 +29,88 @@ export const characters = [
   },
   {
     id: 3,
-    name: "Steel Maiden",
-    class: "Fighting",
-    gender: "female",
-    description: "A powerful warrior with unmatched arm strength. Focuses on upper body power and resilience.",
+    name: "Fox",
+    class: "Agility",
+    gender: "male",
+    description: "A swift and cunning fighter with exceptional agility and quick reflexes.",
     sprites: {
-      level1: "/Fsprite1.png", // Placeholder
-      level2: "/Fsprite2.png", // Placeholder
-      level3: "/Fsprite3.png", // Placeholder
+      level1: "/fox.png",
     },
-    color: "from-red-500 to-red-700",
-    borderColor: "border-red-800"
+    color: "from-orange-500 to-orange-700",
+    borderColor: "border-orange-800"
   },
   {
     id: 4,
-    name: "Swift Strider",
-    class: "Speed",
-    gender: "male",
-    description: "A lightning-fast athlete with incredible stamina. Excels at speed and endurance challenges.",
+    name: "Fox Pink",
+    class: "Agility",
+    gender: "female",
+    description: "A graceful and agile warrior with pink fur and lightning-fast movements.",
     sprites: {
-      level1: "/Msprite1.png", // Placeholder
-      level2: "/Msprite2.png", // Placeholder
-      level3: "/Msprite3.png", // Placeholder
+      level1: "/foxpink.png",
     },
-    color: "from-blue-500 to-blue-700",
-    borderColor: "border-blue-800"
+    color: "from-pink-500 to-pink-700",
+    borderColor: "border-pink-800"
+  },
+  {
+    id: 5,
+    name: "Gorilla",
+    class: "Strength",
+    gender: "male",
+    description: "A mighty beast with incredible strength and raw power. Dominates in close combat.",
+    sprites: {
+      level1: "/gorilla.png",
+    },
+    color: "from-gray-600 to-gray-800",
+    borderColor: "border-gray-900"
+  },
+  {
+    id: 6,
+    name: "Monkey",
+    class: "Agility",
+    gender: "male",
+    description: "A nimble and acrobatic fighter with exceptional balance and dexterity.",
+    sprites: {
+      level1: "/monkey.png",
+    },
+    color: "from-yellow-500 to-yellow-700",
+    borderColor: "border-yellow-800"
+  },
+  {
+    id: 7,
+    name: "Rhino",
+    class: "Tank",
+    gender: "male",
+    description: "A massive and unstoppable force with incredible durability and charging power.",
+    sprites: {
+      level1: "/rhino.png",
+    },
+    color: "from-purple-600 to-purple-800",
+    borderColor: "border-purple-900"
   }
 ];
 
 export const getCharacterSprite = (characterData, statsData) => {
-  const { class: characterClass = 'Fighting', gender = 'male' } = characterData || {};
-  const { level = 1 } = statsData || {};
+  // If characterData is a string (character name), find the character object
+  if (typeof characterData === 'string') {
+    characterData = characters.find(c => c.name === characterData);
+  }
 
-  const character = characters.find(c => c.class === characterClass && c.gender === gender);
-
-  if (!character) {
-    // Return a default sprite if no match is found
+  if (!characterData) {
+    // Return a default sprite if no character is found
     return characters[0].sprites.level1;
   }
 
-  if (level >= 30) {
-    return character.sprites.level3;
+  // Use characterStats to determine level
+  const { armStrength = 10, legStrength = 10 } = statsData || {};
+  
+  // Determine level based on the highest stat
+  const maxStat = Math.max(armStrength, legStrength);
+  
+  if (maxStat >= 30) {
+    return characterData.sprites.level3;
   }
-  if (level >= 15) {
-    return character.sprites.level2;
+  if (maxStat >= 20) {
+    return characterData.sprites.level2;
   }
-  return character.sprites.level1;
+  return characterData.sprites.level1;
 }; 
