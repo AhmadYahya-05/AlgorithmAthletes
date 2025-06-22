@@ -1,7 +1,111 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Calendar, Clock, Target, Trophy, BarChart3 } from 'lucide-react';
 import NavigationBar from '../components/NavigationBar';
+
+// Move AddWorkoutForm outside main component and memoize it
+const AddWorkoutForm = memo(({ newWorkout, setNewWorkout, handleAddWorkout, setShowAddForm }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="bg-gray-900 bg-opacity-70 rounded-xl p-6 border-2 border-yellow-400 shadow-lg"
+    style={{ backdropFilter: 'blur(10px)' }}
+  >
+    <h3 className="text-xl font-bold mb-4 text-yellow-300" style={{ fontFamily: 'monospace' }}>
+      🏋️ Add New Workout
+    </h3>
+    <form onSubmit={handleAddWorkout} className="space-y-4">
+      <div>
+        <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
+          Workout Name
+        </label>
+        <input
+          type="text"
+          value={newWorkout.name}
+          onChange={(e) => setNewWorkout({...newWorkout, name: e.target.value})}
+          className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+          placeholder="e.g., Upper Body Power"
+          required
+        />
+      </div>
+      
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
+            Type
+          </label>
+          <select
+            value={newWorkout.type}
+            onChange={(e) => setNewWorkout({...newWorkout, type: e.target.value})}
+            className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+          >
+            <option value="strength">Strength</option>
+            <option value="cardio">Cardio</option>
+            <option value="flexibility">Flexibility</option>
+            <option value="sports">Sports</option>
+          </select>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
+            Duration (min)
+          </label>
+          <input
+            type="number"
+            value={newWorkout.duration}
+            onChange={(e) => setNewWorkout({...newWorkout, duration: e.target.value})}
+            className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+            placeholder="45"
+            required
+          />
+        </div>
+      </div>
+      
+      <div>
+        <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
+          Date
+        </label>
+        <input
+          type="date"
+          value={newWorkout.date}
+          onChange={(e) => setNewWorkout({...newWorkout, date: e.target.value})}
+          className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+          required
+        />
+      </div>
+      
+      <div>
+        <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
+          Notes
+        </label>
+        <textarea
+          value={newWorkout.notes}
+          onChange={(e) => setNewWorkout({...newWorkout, notes: e.target.value})}
+          className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
+          placeholder="How did this workout feel?"
+          rows="3"
+        />
+      </div>
+      
+      <div className="flex space-x-3">
+        <button
+          type="submit"
+          className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 py-3 px-4 rounded-lg font-bold border-2 border-yellow-600 shadow-lg hover:from-yellow-500 hover:to-orange-600 transition duration-200"
+          style={{ fontFamily: 'monospace' }}
+        >
+          Save Workout
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowAddForm(false)}
+          className="px-4 py-3 border-2 border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition duration-200"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </motion.div>
+));
 
 const WorkoutTracker = ({ user, onLogout }) => {
   const [workouts, setWorkouts] = useState([]);
@@ -109,109 +213,6 @@ const WorkoutTracker = ({ user, onLogout }) => {
     </motion.div>
   );
 
-  const AddWorkoutForm = () => (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="bg-gray-900 bg-opacity-70 rounded-xl p-6 border-2 border-yellow-400 shadow-lg"
-      style={{ backdropFilter: 'blur(10px)' }}
-    >
-      <h3 className="text-xl font-bold mb-4 text-yellow-300" style={{ fontFamily: 'monospace' }}>
-        🏋️ Add New Workout
-      </h3>
-      <form onSubmit={handleAddWorkout} className="space-y-4">
-        <div>
-          <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
-            Workout Name
-          </label>
-          <input
-            type="text"
-            value={newWorkout.name}
-            onChange={(e) => setNewWorkout({...newWorkout, name: e.target.value})}
-            className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
-            placeholder="e.g., Upper Body Power"
-            required
-          />
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
-              Type
-            </label>
-            <select
-              value={newWorkout.type}
-              onChange={(e) => setNewWorkout({...newWorkout, type: e.target.value})}
-              className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
-            >
-              <option value="strength">Strength</option>
-              <option value="cardio">Cardio</option>
-              <option value="flexibility">Flexibility</option>
-              <option value="sports">Sports</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
-              Duration (min)
-            </label>
-            <input
-              type="number"
-              value={newWorkout.duration}
-              onChange={(e) => setNewWorkout({...newWorkout, duration: e.target.value})}
-              className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
-              placeholder="45"
-              required
-            />
-          </div>
-        </div>
-        
-        <div>
-          <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
-            Date
-          </label>
-          <input
-            type="date"
-            value={newWorkout.date}
-            onChange={(e) => setNewWorkout({...newWorkout, date: e.target.value})}
-            className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
-            required
-          />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-bold text-gray-300 mb-2" style={{ fontFamily: 'monospace' }}>
-            Notes
-          </label>
-          <textarea
-            value={newWorkout.notes}
-            onChange={(e) => setNewWorkout({...newWorkout, notes: e.target.value})}
-            className="w-full p-3 bg-gray-800 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 text-white"
-            placeholder="How did this workout feel?"
-            rows="3"
-          />
-        </div>
-        
-        <div className="flex space-x-3">
-          <button
-            type="submit"
-            className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 py-3 px-4 rounded-lg font-bold border-2 border-yellow-600 shadow-lg hover:from-yellow-500 hover:to-orange-600 transition duration-200"
-            style={{ fontFamily: 'monospace' }}
-          >
-            Save Workout
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowAddForm(false)}
-            className="px-4 py-3 border-2 border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition duration-200"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </motion.div>
-  );
-
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-[#2D1B69] to-[#1E3A8A] text-white" style={{ fontFamily: 'monospace' }}>
       {/* Stars in background */}
@@ -309,7 +310,7 @@ const WorkoutTracker = ({ user, onLogout }) => {
                 ADD NEW WORKOUT
               </motion.button>
             ) : (
-              <AddWorkoutForm />
+              <AddWorkoutForm newWorkout={newWorkout} setNewWorkout={setNewWorkout} handleAddWorkout={handleAddWorkout} setShowAddForm={setShowAddForm} />
             )}
           </motion.div>
 
