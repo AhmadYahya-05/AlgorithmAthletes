@@ -10,6 +10,11 @@ export const API_ENDPOINTS = {
   PROFILE: {
     GET: `${API_BASE_URL}/profile`,
     UPDATE: `${API_BASE_URL}/profile`
+  },
+  USERS: {
+    BASE: `${API_BASE_URL}/users`,
+    FRIENDS: `${API_BASE_URL}/users/friends`,
+    ADD_FRIEND: (friendId) => `${API_BASE_URL}/users/friends/${friendId}`
   }
 };
 

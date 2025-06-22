@@ -61,7 +61,7 @@ const Home = ({ user, onLogout }) => {
       
       {/* Decorative Vines */}
       <motion.path
-        d="M 20,90 Q 50,40 100,60 T 180,70"
+        d="M 10,80 C 25,50, 45,110, 60,80"
         fill="none"
         stroke="#10B981"
         strokeWidth="5"
@@ -71,14 +71,14 @@ const Home = ({ user, onLogout }) => {
         transition={{ duration: 1.5, ease: "easeInOut" }}
       />
       <motion.path
-        d="M 780,90 Q 750,40 700,60 T 620,70"
+        d="M 790,80 C 775,50, 755,110, 740,80"
         fill="none"
         stroke="#10B981"
         strokeWidth="5"
         strokeLinecap="round"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
-        transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
       />
 
       <text
@@ -86,7 +86,7 @@ const Home = ({ user, onLogout }) => {
         y="50%"
         dy=".3em"
         textAnchor="middle"
-        fontSize="80"
+        fontSize="150"
         fontFamily="VT323, monospace"
         fill="#fcd34d" // yellow-300
         style={{ filter: 'url(#text-shadow)' }}
