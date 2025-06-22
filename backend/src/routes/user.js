@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
-import { getAllUsers, addFriend, getFriends } from '../controllers/userController.js';
+import { getAllUsers, addFriend, getFriends, removeFriend } from '../controllers/userController.js';
 
 const router = express.Router();
 
@@ -15,7 +15,8 @@ router.route('/friends')
   .get(getFriends);
 
 router.route('/friends/:friendId')
-  .post(addFriend);
+  .post(addFriend)
+  .delete(removeFriend);
 
 // Get user profile
 router.get('/profile', (req, res) => {

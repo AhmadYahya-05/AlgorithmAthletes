@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, UserPlus, Sword, Search, X } from 'lucide-react';
+import { Users, UserPlus, Sword, Search, X, UserX } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import NavigationBar from '../components/NavigationBar';
-import { getCharacterSprite } from '../data/characters';
+import { getCharacterSprite } from '../data/characters.js';
 import { API_ENDPOINTS } from '../config/api';
 
 const FriendsPage = ({ user, onLogout }) => {
@@ -72,6 +72,25 @@ const FriendsPage = ({ user, onLogout }) => {
       console.error("Error adding friend:", error);
     }
   };
+
+  const handleRemoveFriend = async (userId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(API_ENDPOINTS.USERS.REMOVE_FRIEND(userId), {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        setFriends(friends.filter(f => f._id !== userId));
+      } else {
+        const data = await response.json();
+        console.error(data.message);
+      }
+    } catch (error) {
+      console.error("Error removing friend:", error);
+    }
+  };
   
   const filteredUsers = users.filter(u => 
     u.username.toLowerCase().includes(searchTerm.toLowerCase())
@@ -118,16 +137,16 @@ const FriendsPage = ({ user, onLogout }) => {
             {/* Friend */}
             <div>
               <img 
-                src={getCharacterSprite(friend.character)} 
+                src={getCharacterSprite(friend.character, friend.stats)} 
                 alt={friend.username} 
                 className="mx-auto h-24 mb-4"
                 style={{ imageRendering: 'pixelated' }}
               />
               <h4 className="text-xl font-bold text-orange-400">{friend.username}</h4>
-              <p>Level: {friend.level}</p>
+              <p>Level: {friend.stats.level}</p>
               <p>XP: {friend.stats.xp}</p>
-              <p>Workouts: {friend.level * 2}</p>
-              <p>Streak: {friend.level - 5} days</p>
+              <p>Workouts: {friend.stats.level * 2}</p>
+              <p>Streak: {friend.stats.level - 5} days</p>
             </div>
           </div>
         </motion.div>
@@ -143,21 +162,31 @@ const FriendsPage = ({ user, onLogout }) => {
       className="bg-gray-800 bg-opacity-60 rounded-xl p-4 border-2 border-gray-700 text-center shadow-lg"
     >
       <img 
-        src={getCharacterSprite(person.character)} 
+        src={getCharacterSprite(person.character, person.stats)} 
         alt={person.username}
         className="mx-auto h-20 mb-3"
         style={{ imageRendering: 'pixelated' }}
       />
       <h4 className="text-lg font-bold text-yellow-300">{person.username}</h4>
-      <p className="text-sm text-gray-300 mb-4">Level {person.level}</p>
+      <p className="text-sm text-gray-300">Level {person.stats?.level || 1}</p>
+      <p className="text-sm text-gray-400 mb-4">XP: {person.stats?.xp || 0}</p>
       {isFriend ? (
-        <motion.button
-          onClick={() => setSelectedFriend(person)}
-          whileHover={{ scale: 1.1 }}
-          className="w-full bg-cyan-600 text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2"
-        >
-          <Sword size={16} /> Compare
-        </motion.button>
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <motion.button
+            onClick={() => setSelectedFriend(person)}
+            whileHover={{ scale: 1.1 }}
+            className="flex-1 bg-cyan-600 text-white px-3 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2"
+          >
+            <Sword size={16} /> Compare
+          </motion.button>
+          <motion.button
+            onClick={() => handleRemoveFriend(person._id)}
+            whileHover={{ scale: 1.1 }}
+            className="flex-1 bg-red-600 text-white px-3 py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2"
+          >
+            <UserX size={16} /> Remove
+          </motion.button>
+        </div>
       ) : (
         <motion.button
           onClick={() => handleAddFriend(person._id)}
