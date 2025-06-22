@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Users, UserPlus, Sword, Search, X, UserX } from 'lucide-react';
 import { UserContext } from '../context/UserContext';
 import NavigationBar from '../components/NavigationBar';
-import { getCharacterSprite } from '../data/characters.js';
+import { getCharacterSprite, characters } from '../data/characters.js';
 import { API_ENDPOINTS } from '../config/api';
 
 const FriendsPage = ({ user, onLogout }) => {
@@ -14,6 +14,16 @@ const FriendsPage = ({ user, onLogout }) => {
   const [loading, setLoading] = useState(true);
 
   const { fetchUserStats } = useContext(UserContext);
+
+  // Helper function to safely get character sprite
+  const getSafeCharacterSprite = (characterName, stats) => {
+    if (!characterName) return characters[0].sprites.level1;
+    
+    const character = characters.find(c => c.name === characterName);
+    if (!character) return characters[0].sprites.level1;
+    
+    return getCharacterSprite(character, stats);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,7 +133,7 @@ const FriendsPage = ({ user, onLogout }) => {
             {/* Current User */}
             <div>
               <img 
-                src={getCharacterSprite({ class: 'Warrior', gender: 'male' })} 
+                src={getSafeCharacterSprite(null, null)} 
                 alt="Your Character" 
                 className="mx-auto h-24 mb-4"
                 style={{ imageRendering: 'pixelated' }}
@@ -137,7 +147,7 @@ const FriendsPage = ({ user, onLogout }) => {
             {/* Friend */}
             <div>
               <img 
-                src={getCharacterSprite(friend.character, friend.stats)} 
+                src={getSafeCharacterSprite(friend.character, friend.stats)} 
                 alt={friend.username} 
                 className="mx-auto h-24 mb-4"
                 style={{ imageRendering: 'pixelated' }}
@@ -162,7 +172,7 @@ const FriendsPage = ({ user, onLogout }) => {
       className="bg-gray-800 bg-opacity-60 rounded-xl p-4 border-2 border-gray-700 text-center shadow-lg"
     >
       <img 
-        src={getCharacterSprite(person.character, person.stats)} 
+        src={getSafeCharacterSprite(person.character, person.stats)} 
         alt={person.username}
         className="mx-auto h-20 mb-3"
         style={{ imageRendering: 'pixelated' }}
