@@ -25,7 +25,7 @@ const NavigationBar = ({ user, onLogout }) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {['About', 'Features', 'Community', 'Friends', 'Workout Tracker', 'My Profile'].map((item) => (
+            {['About', 'Friends', 'Workout Tracker', 'My Profile'].map((item) => (
               <motion.button
                 key={item}
                 onClick={() => {
