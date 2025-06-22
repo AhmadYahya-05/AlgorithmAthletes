@@ -215,7 +215,7 @@ const NutritionistPage = ({ user, onLogout }) => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50 rounded-lg"></div>
                   <h3 className="absolute bottom-4 left-4 text-xl font-bold text-green-300" style={{ textShadow: '2px 2px 4px #000' }}>
-                    NUTRITIONIST
+                    NUTRITIONIST - Dr. Adams
                   </h3>
                 </div>
 
