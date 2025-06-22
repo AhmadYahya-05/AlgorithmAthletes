@@ -12,10 +12,7 @@ export const UserProvider = ({ children }) => {
     xpToNext: 100, // Default value, can be calculated
   });
 
-  const [activeCharacter, setActiveCharacter] = useState({
-    class: 'Warrior',
-    gender: 'male'
-  });
+  const [activeCharacter, setActiveCharacter] = useState('Iron Fist');
 
   const [characterStats, setCharacterStats] = useState({
     health: 10,

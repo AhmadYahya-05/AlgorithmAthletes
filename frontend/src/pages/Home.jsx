@@ -6,7 +6,7 @@ import { LogOut, User, Trophy, Target, BarChart3, Sword, Shield, Heart, Download
 import { UserContext } from '../context/UserContext';
 import CharacterCard from '../components/CharacterCard';
 import NavigationBar from '../components/NavigationBar';
-import { getCharacterSprite } from '../data/characters';
+import { getCharacterSprite, characters } from '../data/characters';
 import { useNavigate } from 'react-router-dom';
 
 const Home = ({ user, onLogout }) => {
@@ -19,6 +19,9 @@ const Home = ({ user, onLogout }) => {
   const skyY = useTransform(scrollY, [0, 1000], [0, -50]);
 
   const xpPercentage = (userStats.xp / userStats.xpToNext) * 100;
+
+  // Find the active character object
+  const selectedCharacter = characters.find(c => c.name === activeCharacter);
 
   // Parallax Background Component
   const ParallaxBackground = () => (
@@ -250,7 +253,7 @@ const Home = ({ user, onLogout }) => {
                 
                 {/* Character */}
                 <img 
-                  src={getCharacterSprite(activeCharacter, characterStats)} 
+                  src={getCharacterSprite(selectedCharacter, characterStats)} 
                   alt="Selected Character" 
                   className="h-60 w-auto relative z-10"
                   style={{ imageRendering: 'pixelated' }}
