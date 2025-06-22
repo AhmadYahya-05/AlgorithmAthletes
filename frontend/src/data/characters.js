@@ -10,6 +10,7 @@ export const characters = [
       level2: "/Msprite2.png",
       level3: "/Msprite3.png",
     },
+    thumb: "/Msprite1thumb.png",
     color: "from-red-500 to-red-700",
     borderColor: "border-red-800"
   },
@@ -24,6 +25,7 @@ export const characters = [
       level2: "/Fsprite2.png",
       level3: "/Fsprite3.png",
     },
+    thumb: "/Fsprite1thumb.png",
     color: "from-blue-500 to-blue-700",
     borderColor: "border-blue-800"
   },
@@ -36,6 +38,7 @@ export const characters = [
     sprites: {
       level1: "/fox.png",
     },
+    thumb: "/foxthumb.png",
     color: "from-orange-500 to-orange-700",
     borderColor: "border-orange-800"
   },
@@ -48,6 +51,7 @@ export const characters = [
     sprites: {
       level1: "/foxpink.png",
     },
+    thumb: "/foxpinkthumb.png",
     color: "from-pink-500 to-pink-700",
     borderColor: "border-pink-800"
   },
@@ -60,6 +64,7 @@ export const characters = [
     sprites: {
       level1: "/gorilla.png",
     },
+    thumb: "/gorillathumb.png",
     color: "from-gray-600 to-gray-800",
     borderColor: "border-gray-900"
   },
@@ -72,6 +77,7 @@ export const characters = [
     sprites: {
       level1: "/monkey.png",
     },
+    thumb: "/monkeythumb.png",
     color: "from-yellow-500 to-yellow-700",
     borderColor: "border-yellow-800"
   },
@@ -84,6 +90,7 @@ export const characters = [
     sprites: {
       level1: "/rhino.png",
     },
+    thumb: "/rhinothumb.png",
     color: "from-purple-600 to-purple-800",
     borderColor: "border-purple-900"
   }

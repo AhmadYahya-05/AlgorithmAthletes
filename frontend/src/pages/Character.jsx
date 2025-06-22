@@ -62,28 +62,58 @@ const Character = ({ onNavigateBack }) => {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-1 bg-gray-900 bg-opacity-70 rounded-2xl p-6 border-4 border-gray-700 h-fit"
           >
-            <h2 className="text-xl font-bold text-center text-white mb-6" style={{ fontFamily: 'monospace' }}>SELECT A CLASS</h2>
-            <div className="space-y-4">
+            <h2 className="text-xl font-bold text-center text-white mb-6" style={{ fontFamily: 'monospace' }}>SELECT CHARACTER</h2>
+            <div className="grid grid-cols-2 gap-3">
               {characters.map(char => (
                 <motion.div
                   key={char.id}
                   onClick={() => setActiveCharacter(char.name)}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className={`p-4 rounded-xl border-4 cursor-pointer transition-all duration-300 ${
+                  whileHover={{ 
+                    scale: 1.1, 
+                    y: -8,
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.5)'
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`relative cursor-pointer transition-all duration-300 rounded-xl overflow-hidden ${
                     activeCharacter === char.name
-                      ? `${char.borderColor} ring-4 ring-yellow-400`
-                      : `${char.borderColor} bg-opacity-50`
+                      ? 'ring-4 ring-yellow-400 ring-opacity-80 shadow-2xl'
+                      : 'ring-2 ring-gray-600 hover:ring-gray-400'
                   }`}
                   style={{
-                    background: `linear-gradient(145deg, rgba(255,255,255,0.1), rgba(0,0,0,0.2)), linear-gradient(to right, ${char.color.split(' ')[0]}, ${char.color.split(' ')[2]})`
+                    background: `linear-gradient(145deg, rgba(255,255,255,0.1), rgba(0,0,0,0.3)), linear-gradient(to bottom right, ${char.color.split(' ')[0]}, ${char.color.split(' ')[2]})`
                   }}
                 >
-                  <div className="flex items-center space-x-4">
-                    <img src={getCharacterSprite(char, characterStats)} alt={char.name} className="w-16 h-16 bg-black bg-opacity-30 rounded-lg p-1"/>
-                    <div>
-                      <h3 className="text-lg font-bold text-white">{char.name}</h3>
-                      <p className="text-xs text-gray-200">{char.class} Class</p>
-                    </div>
+                  {/* Character Thumbnail */}
+                  <div className="relative w-full h-32 bg-black bg-opacity-40 flex items-center justify-center">
+                    <img 
+                      src={char.thumb} 
+                      alt={char.name} 
+                      className="w-full h-full object-cover"
+                      style={{ imageRendering: 'pixelated' }}
+                    />
+                    
+                    {/* Selection Indicator */}
+                    {activeCharacter === char.name && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="absolute top-2 right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center"
+                      >
+                        <div className="w-3 h-3 bg-yellow-600 rounded-full"></div>
+                      </motion.div>
+                    )}
+                    
+                    {/* Hover Glow Effect */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                      className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"
+                    />
+                  </div>
+                  
+                  {/* Character Name (minimal) */}
+                  <div className="p-2 text-center">
+                    <div className="w-full h-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 mb-1"></div>
                   </div>
                 </motion.div>
               ))}
